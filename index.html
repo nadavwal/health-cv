@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Health CV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        color: #111827;
+        background-color: #f3f4f6;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        display: flex;
+        justify-content: center;
+      }
+      .page {
+        max-width: 1100px;
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 24px;
+      }
+      @media (max-width: 800px) {
+        .page {
+          grid-template-columns: 1fr;
+        }
+      }
+      .card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 20px 22px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+      }
+      h1 {
+        margin: 0 0 4px;
+        font-size: 20px;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+      }
+      label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        font-size: 13px;
+        cursor: pointer;
+        background: #f9fafb;
+      }
+      .pill span.term {
+        text-decoration: underline;
+        text-decoration-style: dotted;
+      }
+      .muted {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+      .button {
+        margin-top: 16px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        background: #111827;
+        color: #f9fafb;
+      }
+      .preview-title {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+      .preview-row {
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+      .preview-row b {
+        font-weight: 600;
+      }
+      .edu-panel {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        max-width: 320px;
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 18px 35px rgba(15, 23, 42, 0.18);
+        padding: 16px 18px 14px;
+        display: none;
+      }
+      .edu-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .edu-body {
+        font-size: 13px;
+        color: #4b5563;
+        margin-bottom: 10px;
+      }
+      .edu-close {
+        border: none;
+        background: none;
+        color: #6b7280;
+        font-size: 12px;
+        padding: 0;
+        cursor: pointer;
+      }
+      .header-meta {
+        font-size: 11px;
+        color: #6b7280;
+        margin-bottom: 16px;
+      }
+      .chip {
+        display: inline-flex;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #f3f4f6;
+        font-size: 11px;
+        color: #4b5563;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- LEFT: FORM / INPUT -->
+      <div class="card">
+        <h1>Health CV</h1>
+        <div class="header-meta">
+          Demo patient • Replace with your own health information
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label>Active Problems</label>
+          <button class="pill" data-term="Hypertension">
+            <span class="term">Hypertension</span>
+          </button>
+          <div style="height: 8px"></div>
+          <button class="pill" data-term="Type2Diabetes">
+            <span class="term">Type 2 diabetes</span>
+          </button>
+          <div class="muted">
+            Click a problem to see a plain-language explanation.
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label>Medications</label>
+          <button class="pill" data-term="Metformin">
+            <span class="term">Metformin</span>
+          </button>
+          <button class="pill" data-term="Olmesartan">
+            <span class="term">Olmesartan</span>
+          </button>
+          <div class="muted">
+            In the real app, you’ll be able to add and edit your own meds.
+          </div>
+        </div>
+
+        <div style="margin-bottom: 16px">
+          <label>Key Labs</label>
+          <button class="pill" data-term="A1c">
+            <span class="term">A1c</span>
+          </button>
+          <div class="muted">
+            Tap A1c to see what that number actually means.
+          </div>
+        </div>
+
+        <button class="button">Generate Health CV PDF</button>
+        <div class="muted">
+          (In this demo, the button doesn’t download yet — it just shows where
+          export will live.)
+        </div>
+      </div>
+
+      <!-- RIGHT: PREVIEW -->
+      <div class="card">
+        <h2>Live Preview</h2>
+        <div class="chip">Demo view for clinicians</div>
+
+        <div style="margin-top: 12px">
+          <div class="preview-row">
+            <b>Active Problems:</b> Hypertension; Type 2 diabetes
+          </div>
+          <div class="preview-row">
+            <b>Medications:</b> Metformin 500 mg twice daily; Olmesartan 20 mg
+            daily
+          </div>
+          <div class="preview-row">
+            <b>Key Labs:</b> A1c 6.7% (2025)
+          </div>
+          <div class="preview-row">
+            <b>What’s important to me:</b> “My goal is to stay healthy and avoid
+            hospital visits if possible.”
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDUCATION PANEL -->
+    <div class="edu-panel" id="eduPanel">
+      <div class="edu-title" id="eduTitle"></div>
+      <div class="edu-body" id="eduBody"></div>
+      <button class="edu-close" id="eduClose">Close</button>
+    </div>
+
+    <script>
+      const glossary = {
+        Hypertension: {
+          title: "Hypertension (High Blood Pressure)",
+          body:
+            "High blood pressure means the force of blood pushing against your artery walls is consistently too high. Over time, this can strain the heart, brain, and kidneys and raise the risk of heart attack and stroke.",
+        },
+        Type2Diabetes: {
+          title: "Type 2 Diabetes",
+          body:
+            "Type 2 diabetes is a condition where your body has trouble using insulin well. Sugar builds up in the blood instead of going into cells for energy. Over many years, this can affect the eyes, kidneys, nerves, and heart.",
+        },
+        Metformin: {
+          title: "Metformin",
+          body:
+            "Metformin is a medication that helps lower blood sugar. It works mainly by helping your body use insulin better and by lowering how much sugar your liver releases into the blood.",
+        },
+        Olmesartan: {
+          title: "Olmesartan",
+          body:
+            "Olmesartan is a blood pressure medication called an ARB. It helps relax blood vessels, making it easier for the heart to pump and lowering the risk of heart and kidney problems.",
+        },
+        A1c: {
+          title: "Hemoglobin A1c",
+          body:
+            "A1c is a blood test that shows your average blood sugar level over the past 2–3 months. Many people with diabetes aim for an A1c around 7%, but the right goal depends on the person and should be set with their doctor.",
+        },
+      };
+
+      const panel = document.getElementById("eduPanel");
+      const titleEl = document.getElementById("eduTitle");
+      const bodyEl = document.getElementById("eduBody");
+      const closeBtn = document.getElementById("eduClose");
+
+      function showTerm(key) {
+        const info = glossary[key];
+        if (!info) return;
+        titleEl.textContent = info.title;
+        bodyEl.textContent = info.body;
+        panel.style.display = "block";
+      }
+
+      closeBtn.addEventListener("click", () => {
+        panel.style.display = "none";
+      });
+
+      document.querySelectorAll("[data-term]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const key = el.getAttribute("data-term");
+          showTerm(key);
+        });
+      });
+    </script>
+  </body>
+</html>
