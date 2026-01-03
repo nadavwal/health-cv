@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Health CV</title>
+    <title>Health CV Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       :root {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        color: #111827;
+        color: #0f172a;
         background-color: #f3f4f6;
       }
       body {
@@ -20,28 +20,28 @@
       .page {
         max-width: 1100px;
         width: 100%;
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
+        display: flex;
+        flex-direction: column;
         gap: 24px;
-      }
-      @media (max-width: 800px) {
-        .page {
-          grid-template-columns: 1fr;
-        }
       }
       .card {
         background: #ffffff;
-        border-radius: 16px;
-        padding: 20px 22px;
+        border-radius: 18px;
+        padding: 22px 24px;
         box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
       }
       h1 {
         margin: 0 0 4px;
-        font-size: 20px;
+        font-size: 22px;
       }
       h2 {
         margin: 0 0 12px;
-        font-size: 16px;
+        font-size: 17px;
+      }
+      .sub {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 18px;
       }
       label {
         font-size: 13px;
@@ -49,6 +49,71 @@
         color: #374151;
         display: block;
         margin-bottom: 4px;
+      }
+      input[type="text"],
+      textarea {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+        padding: 8px 10px;
+        font-size: 13px;
+        resize: vertical;
+        min-height: 36px;
+      }
+      textarea {
+        min-height: 60px;
+      }
+      .field {
+        margin-bottom: 14px;
+      }
+      .hint {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 2px;
+      }
+      .button {
+        margin-top: 12px;
+        padding: 8px 16px;
+        border-radius: 999px;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        background: #111827;
+        color: #f9fafb;
+      }
+      .button.secondary {
+        background: #e5e7eb;
+        color: #111827;
+        margin-left: 8px;
+      }
+      .cv-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 12px;
+      }
+      .cv-name {
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .cv-meta {
+        font-size: 11px;
+        color: #6b7280;
+      }
+      .cv-section-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 12px;
+        margin-bottom: 6px;
+      }
+      .chip {
+        display: inline-flex;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #f3f4f6;
+        font-size: 11px;
+        color: #4b5563;
       }
       .pill {
         display: inline-flex;
@@ -60,38 +125,25 @@
         font-size: 13px;
         cursor: pointer;
         background: #f9fafb;
+        margin: 2px 4px 2px 0;
       }
       .pill span.term {
         text-decoration: underline;
         text-decoration-style: dotted;
       }
-      .muted {
-        font-size: 12px;
-        color: #6b7280;
-        margin-top: 4px;
-      }
-      .button {
-        margin-top: 16px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        border: none;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        background: #111827;
-        color: #f9fafb;
-      }
-      .preview-title {
-        font-size: 15px;
-        font-weight: 600;
-        margin-bottom: 10px;
-      }
-      .preview-row {
+      .cv-row {
         font-size: 13px;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
       }
-      .preview-row b {
+      .cv-row b {
         font-weight: 600;
+      }
+      .quote-box {
+        font-size: 13px;
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 8px 10px;
+        margin-top: 4px;
       }
       .edu-panel {
         position: fixed;
@@ -122,95 +174,143 @@
         padding: 0;
         cursor: pointer;
       }
-      .header-meta {
-        font-size: 11px;
-        color: #6b7280;
-        margin-bottom: 16px;
-      }
-      .chip {
-        display: inline-flex;
-        padding: 2px 8px;
-        border-radius: 999px;
-        background: #f3f4f6;
-        font-size: 11px;
-        color: #4b5563;
+      @media (max-width: 700px) {
+        body {
+          padding: 16px;
+        }
+        .card {
+          padding: 18px 18px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="page">
-      <!-- LEFT: FORM / INPUT -->
-      <div class="card">
+      <!-- INTAKE / HOME SCREEN -->
+      <div class="card" id="intakeCard">
         <h1>Health CV</h1>
-        <div class="header-meta">
-          Demo patient • Replace with your own health information
+        <div class="sub">
+          Start by entering your health information. We’ll turn this into a
+          1-page CV you can share with doctors.
         </div>
 
-        <div style="margin-bottom: 16px">
-          <label>Active Problems</label>
-          <button class="pill" data-term="Hypertension">
-            <span class="term">Hypertension</span>
-          </button>
-          <div style="height: 8px"></div>
-          <button class="pill" data-term="Type2Diabetes">
-            <span class="term">Type 2 diabetes</span>
-          </button>
-          <div class="muted">
-            Click a problem to see a plain-language explanation.
+        <div class="field">
+          <label>Full name (optional)</label>
+          <input type="text" id="nameInput" placeholder="Sam Smith" />
+        </div>
+
+        <div class="field">
+          <label>Problem list</label>
+          <textarea
+            id="problemsInput"
+            placeholder="One problem per line, e.g.&#10;Hypertension&#10;Type 2 diabetes&#10;Generalized anxiety"
+          ></textarea>
+          <div class="hint">
+            This is your list of ongoing medical conditions.
           </div>
         </div>
 
-        <div style="margin-bottom: 16px">
-          <label>Medications</label>
-          <button class="pill" data-term="Metformin">
-            <span class="term">Metformin</span>
-          </button>
-          <button class="pill" data-term="Olmesartan">
-            <span class="term">Olmesartan</span>
-          </button>
-          <div class="muted">
-            In the real app, you’ll be able to add and edit your own meds.
+        <div class="field">
+          <label>Current medications (with dose & frequency)</label>
+          <textarea
+            id="currentMedsInput"
+            placeholder="One per line, e.g.&#10;Metformin 500 mg twice daily&#10;Olmesartan 20 mg daily"
+          ></textarea>
+          <div class="hint">
+            Medications you are taking now. One per line.
           </div>
         </div>
 
-        <div style="margin-bottom: 16px">
-          <label>Key Labs</label>
-          <button class="pill" data-term="A1c">
-            <span class="term">A1c</span>
-          </button>
-          <div class="muted">
-            Tap A1c to see what that number actually means.
+        <div class="field">
+          <label>Medications you tried in the past and why you stopped</label>
+          <textarea
+            id="pastMedsInput"
+            placeholder="One per line, e.g.&#10;Lisinopril 10 mg – cough&#10;Wellbutrin 150 mg – nausea"
+          ></textarea>
+          <div class="hint">
+            This helps doctors avoid repeating things that didn’t work for you.
           </div>
         </div>
 
-        <button class="button">Generate Health CV PDF</button>
-        <div class="muted">
-          (In this demo, the button doesn’t download yet — it just shows where
-          export will live.)
+        <div class="field">
+          <label>Important lab results</label>
+          <textarea
+            id="labsInput"
+            placeholder="One result per line, e.g.&#10;A1c 6.7% (2025)&#10;LDL 115, HDL 32, Total cholesterol 215"
+          ></textarea>
         </div>
+
+        <div class="field">
+          <label>Important imaging or procedures</label>
+          <textarea
+            id="imagingInput"
+            placeholder="One per line, e.g.&#10;CT abdomen/pelvis (2015) – inflamed gallbladder, incidental left kidney cyst"
+          ></textarea>
+        </div>
+
+        <div class="field">
+          <label>What’s important to me (one line)</label>
+          <textarea
+            id="importantInput"
+            placeholder="My goal is to be medication-free if possible, and I value clear explanations."
+          ></textarea>
+          <div class="hint">
+            This is the sentence you want every doctor to read.
+          </div>
+        </div>
+
+        <button class="button" id="generateBtn">
+          Create my Health CV
+        </button>
       </div>
 
-      <!-- RIGHT: PREVIEW -->
-      <div class="card">
-        <h2>Live Preview</h2>
-        <div class="chip">Demo view for clinicians</div>
-
-        <div style="margin-top: 12px">
-          <div class="preview-row">
-            <b>Active Problems:</b> Hypertension; Type 2 diabetes
+      <!-- GENERATED CV VIEW -->
+      <div class="card" id="cvCard" style="display: none">
+        <div class="cv-header">
+          <div>
+            <div class="cv-name" id="cvName">Health CV</div>
+            <div class="cv-meta">
+              Demo view – this is what a doctor would see from your inputs.
+            </div>
           </div>
-          <div class="preview-row">
-            <b>Medications:</b> Metformin 500 mg twice daily; Olmesartan 20 mg
-            daily
-          </div>
-          <div class="preview-row">
-            <b>Key Labs:</b> A1c 6.7% (2025)
-          </div>
-          <div class="preview-row">
-            <b>What’s important to me:</b> “My goal is to stay healthy and avoid
-            hospital visits if possible.”
-          </div>
+          <div class="chip">Click any item to learn what it means</div>
         </div>
+
+        <div class="cv-section">
+          <div class="cv-section-title">Active problems</div>
+          <div id="cvProblems"></div>
+        </div>
+
+        <div class="cv-section">
+          <div class="cv-section-title">Current medications</div>
+          <div id="cvCurrentMeds"></div>
+        </div>
+
+        <div class="cv-section">
+          <div class="cv-section-title">
+            Medications tried in the past (and why stopped)
+          </div>
+          <div id="cvPastMeds"></div>
+        </div>
+
+        <div class="cv-section">
+          <div class="cv-section-title">Key labs</div>
+          <div id="cvLabs"></div>
+        </div>
+
+        <div class="cv-section">
+          <div class="cv-section-title">Imaging & procedures</div>
+          <div id="cvImaging"></div>
+        </div>
+
+        <div class="cv-section">
+          <div class="cv-section-title">What’s important to me</div>
+          <div class="quote-box" id="cvImportant"></div>
+        </div>
+
+        <button class="button secondary" id="editBtn">
+          Back to edit my information
+        </button>
       </div>
     </div>
 
@@ -222,56 +322,202 @@
     </div>
 
     <script>
+      // Simple glossary with plain-language education
       const glossary = {
-        Hypertension: {
+        hypertension: {
           title: "Hypertension (High Blood Pressure)",
           body:
             "High blood pressure means the force of blood pushing against your artery walls is consistently too high. Over time, this can strain the heart, brain, and kidneys and raise the risk of heart attack and stroke.",
         },
-        Type2Diabetes: {
+        "type 2 diabetes": {
           title: "Type 2 Diabetes",
           body:
             "Type 2 diabetes is a condition where your body has trouble using insulin well. Sugar builds up in the blood instead of going into cells for energy. Over many years, this can affect the eyes, kidneys, nerves, and heart.",
         },
-        Metformin: {
+        metformin: {
           title: "Metformin",
           body:
             "Metformin is a medication that helps lower blood sugar. It works mainly by helping your body use insulin better and by lowering how much sugar your liver releases into the blood.",
         },
-        Olmesartan: {
+        olmesartan: {
           title: "Olmesartan",
           body:
             "Olmesartan is a blood pressure medication called an ARB. It helps relax blood vessels, making it easier for the heart to pump and lowering the risk of heart and kidney problems.",
         },
-        A1c: {
+        lisinopril: {
+          title: "Lisinopril",
+          body:
+            "Lisinopril is a blood pressure medication called an ACE inhibitor. Some people develop a dry cough while taking it, which is a common reason to switch to a different medicine.",
+        },
+        wellbutrin: {
+          title: "Wellbutrin (Bupropion)",
+          body:
+            "Wellbutrin (bupropion) is a medication often used for depression or to help people stop smoking. It can cause side effects like nausea or anxiety in some people.",
+        },
+        a1c: {
           title: "Hemoglobin A1c",
           body:
             "A1c is a blood test that shows your average blood sugar level over the past 2–3 months. Many people with diabetes aim for an A1c around 7%, but the right goal depends on the person and should be set with their doctor.",
         },
+        ct: {
+          title: "CT Scan",
+          body:
+            "A CT scan is a type of imaging test that uses X-rays and a computer to create detailed pictures of the inside of the body. It helps doctors look at organs, blood vessels, and bones.",
+        },
+        mri: {
+          title: "MRI",
+          body:
+            "MRI is an imaging test that uses strong magnets and radio waves to make detailed pictures of the inside of the body. It is especially useful for the brain, spine, joints, and soft tissues.",
+        },
       };
 
-      const panel = document.getElementById("eduPanel");
-      const titleEl = document.getElementById("eduTitle");
-      const bodyEl = document.getElementById("eduBody");
-      const closeBtn = document.getElementById("eduClose");
+      const intakeCard = document.getElementById("intakeCard");
+      const cvCard = document.getElementById("cvCard");
 
-      function showTerm(key) {
-        const info = glossary[key];
-        if (!info) return;
-        titleEl.textContent = info.title;
-        bodyEl.textContent = info.body;
-        panel.style.display = "block";
+      const nameInput = document.getElementById("nameInput");
+      const problemsInput = document.getElementById("problemsInput");
+      const currentMedsInput = document.getElementById("currentMedsInput");
+      const pastMedsInput = document.getElementById("pastMedsInput");
+      const labsInput = document.getElementById("labsInput");
+      const imagingInput = document.getElementById("imagingInput");
+      const importantInput = document.getElementById("importantInput");
+
+      const cvName = document.getElementById("cvName");
+      const cvProblems = document.getElementById("cvProblems");
+      const cvCurrentMeds = document.getElementById("cvCurrentMeds");
+      const cvPastMeds = document.getElementById("cvPastMeds");
+      const cvLabs = document.getElementById("cvLabs");
+      const cvImaging = document.getElementById("cvImaging");
+      const cvImportant = document.getElementById("cvImportant");
+
+      const eduPanel = document.getElementById("eduPanel");
+      const eduTitle = document.getElementById("eduTitle");
+      const eduBody = document.getElementById("eduBody");
+      const eduClose = document.getElementById("eduClose");
+
+      function normalizeKey(text) {
+        const t = text.toLowerCase();
+        if (t.includes("hypertension")) return "hypertension";
+        if (t.includes("type 2")) return "type 2 diabetes";
+        if (t.includes("metformin")) return "metformin";
+        if (t.includes("olmesartan")) return "olmesartan";
+        if (t.includes("lisinopril")) return "lisinopril";
+        if (t.includes("wellbutrin") || t.includes("bupropion"))
+          return "wellbutrin";
+        if (t.includes("a1c")) return "a1c";
+        if (t.includes(" ct ")) return "ct";
+        if (t.startsWith("ct ")) return "ct";
+        if (t.includes("mri")) return "mri";
+        return null;
       }
 
-      closeBtn.addEventListener("click", () => {
-        panel.style.display = "none";
+      function makePill(text) {
+        const pill = document.createElement("button");
+        pill.className = "pill";
+        const span = document.createElement("span");
+        span.className = "term";
+        span.textContent = text.trim();
+        pill.appendChild(span);
+
+        const key = normalizeKey(text);
+        if (key && glossary[key]) {
+          pill.addEventListener("click", () => showTerm(key, text));
+        } else {
+          pill.addEventListener("click", () =>
+            showGeneric(text.trim() || "This item")
+          );
+        }
+        return pill;
+      }
+
+      function showTerm(key, fallbackText) {
+        const info = glossary[key];
+        if (!info) return showGeneric(fallbackText);
+        eduTitle.textContent = info.title;
+        eduBody.textContent = info.body;
+        eduPanel.style.display = "block";
+      }
+
+      function showGeneric(text) {
+        eduTitle.textContent = text;
+        eduBody.textContent =
+          "This is an item you entered. In the full Health CV product, this section would show a plain-language explanation of what it means and why it matters.";
+        eduPanel.style.display = "block";
+      }
+
+      eduClose.addEventListener("click", () => {
+        eduPanel.style.display = "none";
       });
 
-      document.querySelectorAll("[data-term]").forEach((el) => {
-        el.addEventListener("click", () => {
-          const key = el.getAttribute("data-term");
-          showTerm(key);
-        });
+      document.getElementById("generateBtn").addEventListener("click", () => {
+        const name = nameInput.value.trim();
+        cvName.textContent = name || "Health CV";
+
+        function lines(value) {
+          return value
+            .split("\n")
+            .map((l) => l.trim())
+            .filter(Boolean);
+        }
+
+        // Problems
+        cvProblems.innerHTML = "";
+        const probs = lines(problemsInput.value);
+        if (!probs.length) {
+          cvProblems.textContent = "No problems entered yet.";
+        } else {
+          probs.forEach((p) => cvProblems.appendChild(makePill(p)));
+        }
+
+        // Current meds
+        cvCurrentMeds.innerHTML = "";
+        const curr = lines(currentMedsInput.value);
+        if (!curr.length) {
+          cvCurrentMeds.textContent = "No current medications entered.";
+        } else {
+          curr.forEach((m) => cvCurrentMeds.appendChild(makePill(m)));
+        }
+
+        // Past meds
+        cvPastMeds.innerHTML = "";
+        const past = lines(pastMedsInput.value);
+        if (!past.length) {
+          cvPastMeds.textContent = "No prior medications listed.";
+        } else {
+          past.forEach((m) => cvPastMeds.appendChild(makePill(m)));
+        }
+
+        // Labs
+        cvLabs.innerHTML = "";
+        const labs = lines(labsInput.value);
+        if (!labs.length) {
+          cvLabs.textContent = "No lab results entered.";
+        } else {
+          labs.forEach((l) => cvLabs.appendChild(makePill(l)));
+        }
+
+        // Imaging
+        cvImaging.innerHTML = "";
+        const imgs = lines(imagingInput.value);
+        if (!imgs.length) {
+          cvImaging.textContent = "No imaging or procedures entered.";
+        } else {
+          imgs.forEach((i) => cvImaging.appendChild(makePill(i)));
+        }
+
+        // Important to me
+        const imp = importantInput.value.trim();
+        cvImportant.textContent =
+          imp ||
+          "Use this space to tell your doctor what matters most to you, in your own words.";
+
+        // Show CV card
+        cvCard.style.display = "block";
+        cvCard.scrollIntoView({ behavior: "smooth" });
+      });
+
+      document.getElementById("editBtn").addEventListener("click", () => {
+        intakeCard.scrollIntoView({ behavior: "smooth" });
       });
     </script>
   </body>
