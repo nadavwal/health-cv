@@ -45,6 +45,7 @@
         font-size: 12px;
         color: #6b7280;
         margin-top: 4px;
+        flex-wrap: wrap;
       }
       .step-pill {
         padding: 4px 10px;
@@ -63,6 +64,14 @@
         }
         .cards {
           grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      @media (max-width: 600px) {
+        body {
+          padding: 12px;
+        }
+        .hero-title {
+          font-size: 22px;
         }
       }
       .card {
@@ -105,6 +114,18 @@
       .field {
         margin-bottom: 14px;
       }
+      .field-row {
+        display: flex;
+        gap: 12px;
+      }
+      .field-row .field {
+        flex: 1;
+      }
+      @media (max-width: 700px) {
+        .field-row {
+          flex-direction: column;
+        }
+      }
       .hint {
         font-size: 11px;
         color: #9ca3af;
@@ -133,6 +154,7 @@
         justify-content: space-between;
         align-items: baseline;
         gap: 12px;
+        flex-wrap: wrap;
       }
       .cv-name {
         font-size: 18px;
@@ -193,6 +215,22 @@
         padding: 8px 10px;
         margin-top: 4px;
         border: 1px dashed #e5e7eb;
+      }
+      .files-list {
+        font-size: 12px;
+        color: #4b5563;
+      }
+      .file-pill {
+        display: inline-flex;
+        padding: 3px 8px;
+        border-radius: 999px;
+        background: #f3f4f6;
+        border: 1px solid #e5e7eb;
+        margin: 2px 4px 2px 0;
+      }
+      .file-input {
+        width: 100%;
+        font-size: 12px;
       }
       .edu-panel {
         position: fixed;
@@ -257,7 +295,9 @@
         <div class="steps">
           <div class="step-pill">Step 1 · Enter your information</div>
           <div class="step-pill">Step 2 · Review your Health CV</div>
-          <div class="step-pill">Step 3 · Click items for plain-language info</div>
+          <div class="step-pill">
+            Step 3 · Click items for plain-language info
+          </div>
         </div>
       </div>
 
@@ -271,9 +311,21 @@
             this demo.
           </div>
 
-          <div class="field">
-            <label>Full name (optional)</label>
-            <input type="text" id="nameInput" placeholder="Sam Smith" />
+          <div class="field-row">
+            <div class="field">
+              <label>Full name (optional)</label>
+              <input type="text" id="nameInput" placeholder="Sam Smith" />
+            </div>
+            <div class="field">
+              <label>Allergies</label>
+              <textarea
+                id="allergiesInput"
+                placeholder="e.g. Penicillin – rash&#10;No known drug allergies"
+              ></textarea>
+              <div class="hint">
+                Medications or substances that have caused reactions.
+              </div>
+            </div>
           </div>
 
           <div class="field">
@@ -307,20 +359,32 @@
             </div>
           </div>
 
-          <div class="field">
-            <label>Important lab results</label>
-            <textarea
-              id="labsInput"
-              placeholder="One result per line, e.g.&#10;A1c 6.7% (2025)&#10;LDL 115, HDL 32, Total cholesterol 215"
-            ></textarea>
+          <div class="field-row">
+            <div class="field">
+              <label>Important lab results</label>
+              <textarea
+                id="labsInput"
+                placeholder="One result per line, e.g.&#10;A1c 6.7% (2025)&#10;LDL 115, HDL 32, Total cholesterol 215"
+              ></textarea>
+            </div>
+            <div class="field">
+              <label>Imaging or procedures</label>
+              <textarea
+                id="imagingInput"
+                placeholder="One per line, e.g.&#10;CT abdomen/pelvis (2015) – inflamed gallbladder, incidental left kidney cyst"
+              ></textarea>
+            </div>
           </div>
 
           <div class="field">
-            <label>Important imaging or procedures</label>
+            <label>Social history (optional)</label>
             <textarea
-              id="imagingInput"
-              placeholder="One per line, e.g.&#10;CT abdomen/pelvis (2015) – inflamed gallbladder, incidental left kidney cyst"
+              id="socialInput"
+              placeholder="e.g. Lives with partner and 2 kids, works as a teacher, walks daily. Never smoked, drinks 1–2 glasses of wine/week."
             ></textarea>
+            <div class="hint">
+              Anything about your life that affects your health.
+            </div>
           </div>
 
           <div class="field">
@@ -331,6 +395,22 @@
             ></textarea>
             <div class="hint">
               The sentence you want every doctor to read.
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Attach files (optional)</label>
+            <input
+              type="file"
+              id="fileInput"
+              class="file-input"
+              multiple
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            />
+            <div class="hint">
+              In a real product, this could include discharge summaries, prior
+              imaging reports, or lab PDFs. In this demo, files stay in your
+              browser and are not uploaded.
             </div>
           </div>
 
@@ -369,6 +449,11 @@
           </div>
 
           <div class="cv-section">
+            <div class="cv-section-title">Allergies</div>
+            <div id="cvAllergies"></div>
+          </div>
+
+          <div class="cv-section">
             <div class="cv-section-title">Key labs</div>
             <div id="cvLabs"></div>
           </div>
@@ -379,8 +464,18 @@
           </div>
 
           <div class="cv-section">
+            <div class="cv-section-title">Social history</div>
+            <div class="cv-row" id="cvSocial"></div>
+          </div>
+
+          <div class="cv-section">
             <div class="cv-section-title">What’s important to me</div>
             <div class="quote-box" id="cvImportant"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Files attached (demo only)</div>
+            <div class="files-list" id="cvFiles"></div>
           </div>
 
           <button class="button secondary" id="editBtn">
@@ -393,9 +488,7 @@
     <!-- EDUCATION / "AI" PANEL -->
     <div class="edu-panel" id="eduPanel">
       <div class="edu-header">
-        <div>
-          <div class="edu-chip">Health CV Assistant</div>
-        </div>
+        <div class="edu-chip">Health CV Assistant</div>
         <button class="edu-close" id="eduClose">Close</button>
       </div>
       <div class="edu-term-label" id="eduTermLabel"></div>
@@ -451,26 +544,37 @@
           body:
             "MRI uses strong magnets and radio waves to make detailed pictures of the inside of the body. It is especially useful for the brain, spine, joints, and other soft tissues.",
         },
+        penicillin: {
+          title: "Penicillin Allergy",
+          body:
+            "A penicillin allergy means your body reacts to penicillin antibiotics. Reactions can range from rash to more serious symptoms. It is important to tell every doctor and pharmacist about this.",
+        },
       };
 
       const intakeCard = document.getElementById("intakeCard");
       const cvCard = document.getElementById("cvCard");
 
       const nameInput = document.getElementById("nameInput");
+      const allergiesInput = document.getElementById("allergiesInput");
       const problemsInput = document.getElementById("problemsInput");
       const currentMedsInput = document.getElementById("currentMedsInput");
       const pastMedsInput = document.getElementById("pastMedsInput");
       const labsInput = document.getElementById("labsInput");
       const imagingInput = document.getElementById("imagingInput");
+      const socialInput = document.getElementById("socialInput");
       const importantInput = document.getElementById("importantInput");
+      const fileInput = document.getElementById("fileInput");
 
       const cvName = document.getElementById("cvName");
       const cvProblems = document.getElementById("cvProblems");
       const cvCurrentMeds = document.getElementById("cvCurrentMeds");
       const cvPastMeds = document.getElementById("cvPastMeds");
+      const cvAllergies = document.getElementById("cvAllergies");
       const cvLabs = document.getElementById("cvLabs");
       const cvImaging = document.getElementById("cvImaging");
+      const cvSocial = document.getElementById("cvSocial");
       const cvImportant = document.getElementById("cvImportant");
+      const cvFiles = document.getElementById("cvFiles");
 
       const eduPanel = document.getElementById("eduPanel");
       const eduTitle = document.getElementById("eduTitle");
@@ -491,6 +595,7 @@
         if (t.includes(" ct ")) return "ct";
         if (t.startsWith("ct ")) return "ct";
         if (t.includes("mri")) return "mri";
+        if (t.includes("penicillin")) return "penicillin";
         return null;
       }
 
@@ -574,6 +679,15 @@
           past.forEach((m) => cvPastMeds.appendChild(makePill(m)));
         }
 
+        // Allergies
+        cvAllergies.innerHTML = "";
+        const alls = lines(allergiesInput.value);
+        if (!alls.length) {
+          cvAllergies.textContent = "No allergies recorded.";
+        } else {
+          alls.forEach((a) => cvAllergies.appendChild(makePill(a)));
+        }
+
         // Labs
         cvLabs.innerHTML = "";
         const labs = lines(labsInput.value);
@@ -592,11 +706,31 @@
           imgs.forEach((i) => cvImaging.appendChild(makePill(i)));
         }
 
+        // Social history
+        const social = socialInput.value.trim();
+        cvSocial.textContent =
+          social ||
+          "You can use this space to describe your home life, work, daily activity, and habits like smoking or alcohol use.";
+
         // Important to me
         const imp = importantInput.value.trim();
         cvImportant.textContent =
           imp ||
           "Use this space to tell your doctor what matters most to you, in your own words.";
+
+        // Files (just show file names)
+        cvFiles.innerHTML = "";
+        if (fileInput.files && fileInput.files.length > 0) {
+          Array.from(fileInput.files).forEach((f) => {
+            const span = document.createElement("span");
+            span.className = "file-pill";
+            span.textContent = f.name;
+            cvFiles.appendChild(span);
+          });
+        } else {
+          cvFiles.textContent =
+            "No files attached in this demo. In a full product, file names or icons would appear here.";
+        }
 
         cvCard.style.display = "block";
         cvCard.scrollIntoView({ behavior: "smooth" });
