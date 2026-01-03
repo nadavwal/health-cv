@@ -8,8 +8,8 @@
       :root {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
           sans-serif;
-        color: #0f172a;
-        background-color: #f3f4f6;
+        color: #020617;
+        background-color: #e5e7eb;
       }
       body {
         margin: 0;
@@ -18,30 +18,68 @@
         justify-content: center;
       }
       .page {
-        max-width: 1100px;
+        max-width: 1120px;
         width: 100%;
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        gap: 20px;
+      }
+      .hero {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .hero-title {
+        font-size: 26px;
+        font-weight: 650;
+        letter-spacing: -0.02em;
+      }
+      .hero-sub {
+        font-size: 14px;
+        color: #6b7280;
+        max-width: 540px;
+      }
+      .steps {
+        display: flex;
+        gap: 10px;
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 4px;
+      }
+      .step-pill {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: #f9fafb;
+        border: 1px solid #e5e7eb;
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 18px;
+      }
+      @media (max-width: 900px) {
+        body {
+          padding: 16px;
+        }
+        .cards {
+          grid-template-columns: minmax(0, 1fr);
+        }
       }
       .card {
-        background: #ffffff;
-        border-radius: 18px;
-        padding: 22px 24px;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-      }
-      h1 {
-        margin: 0 0 4px;
-        font-size: 22px;
+        background: #f9fafb;
+        border-radius: 20px;
+        padding: 20px 22px;
+        box-shadow: 0 18px 40px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e5e7eb;
       }
       h2 {
-        margin: 0 0 12px;
+        margin: 0 0 4px;
         font-size: 17px;
       }
       .sub {
         font-size: 12px;
         color: #6b7280;
-        margin-bottom: 18px;
+        margin-bottom: 14px;
       }
       label {
         font-size: 13px;
@@ -59,6 +97,7 @@
         font-size: 13px;
         resize: vertical;
         min-height: 36px;
+        background: #ffffff;
       }
       textarea {
         min-height: 60px;
@@ -69,23 +108,25 @@
       .hint {
         font-size: 11px;
         color: #9ca3af;
-        margin-top: 2px;
+        margin-top: 3px;
       }
       .button {
         margin-top: 12px;
-        padding: 8px 16px;
+        padding: 9px 18px;
         border-radius: 999px;
         border: none;
         font-size: 14px;
         font-weight: 500;
         cursor: pointer;
-        background: #111827;
+        background: #0f172a;
         color: #f9fafb;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.25);
       }
       .button.secondary {
         background: #e5e7eb;
         color: #111827;
-        margin-left: 8px;
+        box-shadow: none;
+        margin-top: 16px;
       }
       .cv-header {
         display: flex;
@@ -109,11 +150,13 @@
       }
       .chip {
         display: inline-flex;
-        padding: 2px 8px;
+        padding: 3px 10px;
         border-radius: 999px;
-        background: #f3f4f6;
+        background: #e0f2fe;
         font-size: 11px;
-        color: #4b5563;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+        white-space: nowrap;
       }
       .pill {
         display: inline-flex;
@@ -122,28 +165,34 @@
         padding: 4px 10px;
         border-radius: 999px;
         border: 1px solid #e5e7eb;
-        font-size: 13px;
+        font-size: 12px;
         cursor: pointer;
-        background: #f9fafb;
-        margin: 2px 4px 2px 0;
+        background: #ffffff;
+        margin: 2px 4px 4px 0;
+        transition: background 0.12s ease, box-shadow 0.12s ease,
+          transform 0.08s ease;
       }
       .pill span.term {
         text-decoration: underline;
         text-decoration-style: dotted;
+        text-underline-offset: 2px;
+      }
+      .pill:hover {
+        background: #eff6ff;
+        box-shadow: 0 6px 14px rgba(37, 99, 235, 0.12);
+        transform: translateY(-1px);
       }
       .cv-row {
         font-size: 13px;
         margin-bottom: 4px;
       }
-      .cv-row b {
-        font-weight: 600;
-      }
       .quote-box {
         font-size: 13px;
-        background: #f9fafb;
-        border-radius: 12px;
+        background: #ffffff;
+        border-radius: 14px;
         padding: 8px 10px;
         margin-top: 4px;
+        border: 1px dashed #e5e7eb;
       }
       .edu-panel {
         position: fixed;
@@ -151,13 +200,27 @@
         bottom: 24px;
         max-width: 320px;
         background: #ffffff;
-        border-radius: 16px;
-        box-shadow: 0 18px 35px rgba(15, 23, 42, 0.18);
+        border-radius: 18px;
+        box-shadow: 0 22px 55px rgba(15, 23, 42, 0.28);
         padding: 16px 18px 14px;
         display: none;
+        border: 1px solid #e5e7eb;
+      }
+      .edu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+      }
+      .edu-chip {
+        font-size: 11px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1d4ed8;
       }
       .edu-title {
-        font-size: 14px;
+        font-size: 13px;
         font-weight: 600;
         margin-bottom: 4px;
       }
@@ -174,155 +237,174 @@
         padding: 0;
         cursor: pointer;
       }
-      @media (max-width: 700px) {
-        body {
-          padding: 16px;
-        }
-        .card {
-          padding: 18px 18px;
-        }
+      .edu-term-label {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-bottom: 4px;
       }
     </style>
   </head>
   <body>
     <div class="page">
-      <!-- INTAKE / HOME SCREEN -->
-      <div class="card" id="intakeCard">
-        <h1>Health CV</h1>
-        <div class="sub">
-          Start by entering your health information. We’ll turn this into a
-          1-page CV you can share with doctors.
+      <!-- HERO / INTRO -->
+      <div class="hero">
+        <div class="hero-title">Health CV (Demo)</div>
+        <div class="hero-sub">
+          A simple way for patients to capture their story once and share it
+          anywhere. Fill in your details, then see the 1-page CV a doctor would
+          read.
         </div>
-
-        <div class="field">
-          <label>Full name (optional)</label>
-          <input type="text" id="nameInput" placeholder="Sam Smith" />
+        <div class="steps">
+          <div class="step-pill">Step 1 · Enter your information</div>
+          <div class="step-pill">Step 2 · Review your Health CV</div>
+          <div class="step-pill">Step 3 · Click items for plain-language info</div>
         </div>
-
-        <div class="field">
-          <label>Problem list</label>
-          <textarea
-            id="problemsInput"
-            placeholder="One problem per line, e.g.&#10;Hypertension&#10;Type 2 diabetes&#10;Generalized anxiety"
-          ></textarea>
-          <div class="hint">
-            This is your list of ongoing medical conditions.
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Current medications (with dose & frequency)</label>
-          <textarea
-            id="currentMedsInput"
-            placeholder="One per line, e.g.&#10;Metformin 500 mg twice daily&#10;Olmesartan 20 mg daily"
-          ></textarea>
-          <div class="hint">
-            Medications you are taking now. One per line.
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Medications you tried in the past and why you stopped</label>
-          <textarea
-            id="pastMedsInput"
-            placeholder="One per line, e.g.&#10;Lisinopril 10 mg – cough&#10;Wellbutrin 150 mg – nausea"
-          ></textarea>
-          <div class="hint">
-            This helps doctors avoid repeating things that didn’t work for you.
-          </div>
-        </div>
-
-        <div class="field">
-          <label>Important lab results</label>
-          <textarea
-            id="labsInput"
-            placeholder="One result per line, e.g.&#10;A1c 6.7% (2025)&#10;LDL 115, HDL 32, Total cholesterol 215"
-          ></textarea>
-        </div>
-
-        <div class="field">
-          <label>Important imaging or procedures</label>
-          <textarea
-            id="imagingInput"
-            placeholder="One per line, e.g.&#10;CT abdomen/pelvis (2015) – inflamed gallbladder, incidental left kidney cyst"
-          ></textarea>
-        </div>
-
-        <div class="field">
-          <label>What’s important to me (one line)</label>
-          <textarea
-            id="importantInput"
-            placeholder="My goal is to be medication-free if possible, and I value clear explanations."
-          ></textarea>
-          <div class="hint">
-            This is the sentence you want every doctor to read.
-          </div>
-        </div>
-
-        <button class="button" id="generateBtn">
-          Create my Health CV
-        </button>
       </div>
 
-      <!-- GENERATED CV VIEW -->
-      <div class="card" id="cvCard" style="display: none">
-        <div class="cv-header">
-          <div>
-            <div class="cv-name" id="cvName">Health CV</div>
-            <div class="cv-meta">
-              Demo view – this is what a doctor would see from your inputs.
+      <!-- MAIN CARDS -->
+      <div class="cards">
+        <!-- LEFT: INTAKE -->
+        <div class="card" id="intakeCard">
+          <h2>Step 1 · Tell us about your health</h2>
+          <div class="sub">
+            You can use a real example or a made-up one. No data is saved in
+            this demo.
+          </div>
+
+          <div class="field">
+            <label>Full name (optional)</label>
+            <input type="text" id="nameInput" placeholder="Sam Smith" />
+          </div>
+
+          <div class="field">
+            <label>Problem list</label>
+            <textarea
+              id="problemsInput"
+              placeholder="One problem per line, e.g.&#10;Hypertension&#10;Type 2 diabetes&#10;Generalized anxiety"
+            ></textarea>
+            <div class="hint">Your ongoing medical conditions.</div>
+          </div>
+
+          <div class="field">
+            <label>Current medications (with dose &amp; frequency)</label>
+            <textarea
+              id="currentMedsInput"
+              placeholder="One per line, e.g.&#10;Metformin 500 mg twice daily&#10;Olmesartan 20 mg daily"
+            ></textarea>
+            <div class="hint">
+              Medications you are taking now. One per line.
             </div>
           </div>
-          <div class="chip">Click any item to learn what it means</div>
-        </div>
 
-        <div class="cv-section">
-          <div class="cv-section-title">Active problems</div>
-          <div id="cvProblems"></div>
-        </div>
-
-        <div class="cv-section">
-          <div class="cv-section-title">Current medications</div>
-          <div id="cvCurrentMeds"></div>
-        </div>
-
-        <div class="cv-section">
-          <div class="cv-section-title">
-            Medications tried in the past (and why stopped)
+          <div class="field">
+            <label>Medications you tried in the past and why you stopped</label>
+            <textarea
+              id="pastMedsInput"
+              placeholder="One per line, e.g.&#10;Lisinopril 10 mg – cough&#10;Wellbutrin 150 mg – nausea"
+            ></textarea>
+            <div class="hint">
+              Helps doctors avoid repeating things that didn’t work for you.
+            </div>
           </div>
-          <div id="cvPastMeds"></div>
+
+          <div class="field">
+            <label>Important lab results</label>
+            <textarea
+              id="labsInput"
+              placeholder="One result per line, e.g.&#10;A1c 6.7% (2025)&#10;LDL 115, HDL 32, Total cholesterol 215"
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label>Important imaging or procedures</label>
+            <textarea
+              id="imagingInput"
+              placeholder="One per line, e.g.&#10;CT abdomen/pelvis (2015) – inflamed gallbladder, incidental left kidney cyst"
+            ></textarea>
+          </div>
+
+          <div class="field">
+            <label>What’s important to me (one line)</label>
+            <textarea
+              id="importantInput"
+              placeholder="My goal is to be medication-free if possible, and I value clear explanations."
+            ></textarea>
+            <div class="hint">
+              The sentence you want every doctor to read.
+            </div>
+          </div>
+
+          <button class="button" id="generateBtn">
+            Create my Health CV
+          </button>
         </div>
 
-        <div class="cv-section">
-          <div class="cv-section-title">Key labs</div>
-          <div id="cvLabs"></div>
-        </div>
+        <!-- RIGHT: CV VIEW -->
+        <div class="card" id="cvCard" style="display: none">
+          <div class="cv-header">
+            <div>
+              <div class="cv-name" id="cvName">Health CV</div>
+              <div class="cv-meta">
+                Preview of what a clinician would see, based on your inputs.
+              </div>
+            </div>
+            <div class="chip">Click items for explanations</div>
+          </div>
 
-        <div class="cv-section">
-          <div class="cv-section-title">Imaging & procedures</div>
-          <div id="cvImaging"></div>
-        </div>
+          <div class="cv-section">
+            <div class="cv-section-title">Active problems</div>
+            <div id="cvProblems"></div>
+          </div>
 
-        <div class="cv-section">
-          <div class="cv-section-title">What’s important to me</div>
-          <div class="quote-box" id="cvImportant"></div>
-        </div>
+          <div class="cv-section">
+            <div class="cv-section-title">Current medications</div>
+            <div id="cvCurrentMeds"></div>
+          </div>
 
-        <button class="button secondary" id="editBtn">
-          Back to edit my information
-        </button>
+          <div class="cv-section">
+            <div class="cv-section-title">
+              Medications tried in the past (and why stopped)
+            </div>
+            <div id="cvPastMeds"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Key labs</div>
+            <div id="cvLabs"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Imaging &amp; procedures</div>
+            <div id="cvImaging"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">What’s important to me</div>
+            <div class="quote-box" id="cvImportant"></div>
+          </div>
+
+          <button class="button secondary" id="editBtn">
+            Back to edit my information
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- EDUCATION PANEL -->
+    <!-- EDUCATION / "AI" PANEL -->
     <div class="edu-panel" id="eduPanel">
+      <div class="edu-header">
+        <div>
+          <div class="edu-chip">Health CV Assistant</div>
+        </div>
+        <button class="edu-close" id="eduClose">Close</button>
+      </div>
+      <div class="edu-term-label" id="eduTermLabel"></div>
       <div class="edu-title" id="eduTitle"></div>
       <div class="edu-body" id="eduBody"></div>
-      <button class="edu-close" id="eduClose">Close</button>
     </div>
 
     <script>
-      // Simple glossary with plain-language education
+      // Plain-language glossary (simulating AI for common terms)
       const glossary = {
         hypertension: {
           title: "Hypertension (High Blood Pressure)",
@@ -337,7 +419,7 @@
         metformin: {
           title: "Metformin",
           body:
-            "Metformin is a medication that helps lower blood sugar. It works mainly by helping your body use insulin better and by lowering how much sugar your liver releases into the blood.",
+            "Metformin is a medication that helps lower blood sugar. It mainly works by helping your body use insulin better and by lowering how much sugar your liver releases into the blood.",
         },
         olmesartan: {
           title: "Olmesartan",
@@ -347,12 +429,12 @@
         lisinopril: {
           title: "Lisinopril",
           body:
-            "Lisinopril is a blood pressure medication called an ACE inhibitor. Some people develop a dry cough while taking it, which is a common reason to switch to a different medicine.",
+            "Lisinopril is a blood pressure medication called an ACE inhibitor. A common side effect is a dry cough, which is one reason some people are switched to a different medicine.",
         },
         wellbutrin: {
           title: "Wellbutrin (Bupropion)",
           body:
-            "Wellbutrin (bupropion) is a medication often used for depression or to help people stop smoking. It can cause side effects like nausea or anxiety in some people.",
+            "Wellbutrin, also known as bupropion, is often used to treat depression or to help people stop smoking. It can cause side effects like nausea, trouble sleeping, or feeling more anxious in some people.",
         },
         a1c: {
           title: "Hemoglobin A1c",
@@ -362,12 +444,12 @@
         ct: {
           title: "CT Scan",
           body:
-            "A CT scan is a type of imaging test that uses X-rays and a computer to create detailed pictures of the inside of the body. It helps doctors look at organs, blood vessels, and bones.",
+            "A CT scan uses X-rays and a computer to create detailed pictures of the inside of the body. It helps doctors look closely at organs, blood vessels, and bones.",
         },
         mri: {
           title: "MRI",
           body:
-            "MRI is an imaging test that uses strong magnets and radio waves to make detailed pictures of the inside of the body. It is especially useful for the brain, spine, joints, and soft tissues.",
+            "MRI uses strong magnets and radio waves to make detailed pictures of the inside of the body. It is especially useful for the brain, spine, joints, and other soft tissues.",
         },
       };
 
@@ -394,6 +476,7 @@
       const eduTitle = document.getElementById("eduTitle");
       const eduBody = document.getElementById("eduBody");
       const eduClose = document.getElementById("eduClose");
+      const eduTermLabel = document.getElementById("eduTermLabel");
 
       function normalizeKey(text) {
         const t = text.toLowerCase();
@@ -413,6 +496,7 @@
 
       function makePill(text) {
         const pill = document.createElement("button");
+        pill.type = "button";
         pill.className = "pill";
         const span = document.createElement("span");
         span.className = "term";
@@ -420,28 +504,31 @@
         pill.appendChild(span);
 
         const key = normalizeKey(text);
-        if (key && glossary[key]) {
-          pill.addEventListener("click", () => showTerm(key, text));
-        } else {
-          pill.addEventListener("click", () =>
-            showGeneric(text.trim() || "This item")
-          );
-        }
+        pill.addEventListener("click", () => {
+          if (key && glossary[key]) {
+            showTerm(key, text);
+          } else {
+            showGeneric(text.trim() || "This item");
+          }
+        });
+
         return pill;
       }
 
-      function showTerm(key, fallbackText) {
+      function showTerm(key, originalText) {
         const info = glossary[key];
-        if (!info) return showGeneric(fallbackText);
+        if (!info) return showGeneric(originalText);
+        eduTermLabel.textContent = `You clicked: “${originalText.trim()}”`;
         eduTitle.textContent = info.title;
         eduBody.textContent = info.body;
         eduPanel.style.display = "block";
       }
 
       function showGeneric(text) {
-        eduTitle.textContent = text;
+        eduTermLabel.textContent = `You clicked: “${text}”`;
+        eduTitle.textContent = "Let’s make this easier to talk about";
         eduBody.textContent =
-          "This is an item you entered. In the full Health CV product, this section would show a plain-language explanation of what it means and why it matters.";
+          "This might be a diagnosis, medication, test, or procedure that matters to you. In the full Health CV product, an AI assistant would pull a clear, plain-language explanation here. For now, you can use this as a reminder to ask: What is it? Why do I have it? How is it monitored or treated? What should I watch for?";
         eduPanel.style.display = "block";
       }
 
@@ -449,16 +536,16 @@
         eduPanel.style.display = "none";
       });
 
+      function lines(value) {
+        return value
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
+      }
+
       document.getElementById("generateBtn").addEventListener("click", () => {
         const name = nameInput.value.trim();
         cvName.textContent = name || "Health CV";
-
-        function lines(value) {
-          return value
-            .split("\n")
-            .map((l) => l.trim())
-            .filter(Boolean);
-        }
 
         // Problems
         cvProblems.innerHTML = "";
@@ -511,7 +598,6 @@
           imp ||
           "Use this space to tell your doctor what matters most to you, in your own words.";
 
-        // Show CV card
         cvCard.style.display = "block";
         cvCard.scrollIntoView({ behavior: "smooth" });
       });
@@ -519,6 +605,23 @@
       document.getElementById("editBtn").addEventListener("click", () => {
         intakeCard.scrollIntoView({ behavior: "smooth" });
       });
+
+      /*
+        NOTE: In a real AI-powered version, inside showTerm/showGeneric you would
+        call your backend, e.g.
+
+        fetch("/api/explain", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ term: text, context: ... })
+        }).then(res => res.json()).then(data => {
+          eduTitle.textContent = data.title;
+          eduBody.textContent = data.body;
+        });
+
+        The backend would talk to an AI model with your API key.
+        You never put the key directly in this browser code.
+      */
     </script>
   </body>
 </html>
