@@ -39,33 +39,30 @@
       .hero {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 8px;
         margin-bottom: 4px;
       }
 
-      /* NEW: logo styles */
+      /* Logo pill */
       .logo {
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #e5f3ff;
       }
 
       .logo-icon {
-        width: 36px;
-        height: 36px;
+        width: 20px;
+        height: 20px;
       }
 
       .logo-text {
-        font-size: 16px;
-        font-weight: 700;
+        font-size: 14px;
+        font-weight: 600;
         color: #0f172a;
         letter-spacing: -0.01em;
-      }
-
-      .hero-title {
-        font-size: 26px;
-        font-weight: 650;
-        letter-spacing: -0.02em;
       }
 
       .hero-sub {
@@ -108,9 +105,6 @@
       @media (max-width: 600px) {
         body {
           padding: 16px 12px;
-        }
-        .hero-title {
-          font-size: 22px;
         }
       }
 
@@ -362,7 +356,7 @@
     <div class="page">
       <!-- HERO -->
       <div class="hero">
-        <!-- NEW: Logo -->
+        <!-- Logo + title combined -->
         <div class="logo">
           <svg
             class="logo-icon"
@@ -388,10 +382,9 @@
               fill="#38bdf8"
             />
           </svg>
-          <span class="logo-text">Health CV</span>
+          <span class="logo-text">Health CV (Demo)</span>
         </div>
 
-        <div class="hero-title">Health CV (Demo)</div>
         <div class="hero-sub">
           A simple way for patients to capture their story once and share it
           anywhere. Fill in your details, then see the 1-page CV a doctor would
@@ -433,7 +426,7 @@
             </div>
           </div>
 
-          <!-- What’s important to me (still here in intake, but will appear at top of CV) -->
+          <!-- What’s important to me -->
           <div class="field">
             <label>What’s important to me</label>
             <textarea
@@ -587,7 +580,7 @@
             <div class="chip">Click items for explanations</div>
           </div>
 
-          <!-- What’s important to me now near the top -->
+          <!-- What’s important to me -->
           <div class="cv-section">
             <div class="cv-section-title">What’s important to me</div>
             <div class="quote-box" id="cvImportant"></div>
@@ -951,7 +944,7 @@
           social ||
           "Use this space to describe your home life, work, daily activity, and habits like smoking or alcohol use.";
 
-        // Important to me (now at top)
+        // Important to me
         const imp = importantInput.value.trim();
         cvImportant.textContent =
           imp ||
@@ -980,13 +973,6 @@
       editBtn.addEventListener("click", () => {
         intakeCard.scrollIntoView({ behavior: "smooth" });
       });
-
-      /*
-        In a real AI-powered version, inside showTerm/showGeneric you would
-        call your backend, e.g. POST /api/explain with { term, context }.
-        The backend would talk to an AI model. You never put the API key
-        in this browser code.
-      */
     </script>
   </body>
 </html>
