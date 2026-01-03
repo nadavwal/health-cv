@@ -412,7 +412,7 @@
             </div>
           </div>
 
-          <!-- What’s important to me (still here in intake, but will appear at top of CV) -->
+          <!-- What’s important to me -->
           <div class="field">
             <label>What’s important to me</label>
             <textarea
@@ -573,7 +573,7 @@
             <div class="chip">Click items for explanations</div>
           </div>
 
-          <!-- What’s important to me now near the top -->
+          <!-- What’s important to me -->
           <div class="cv-section" data-section="important">
             <div class="cv-section-title">What’s important to me</div>
             <div class="quote-box" id="cvImportant"></div>
@@ -756,6 +756,15 @@
           .filter(Boolean);
       }
 
+      // Clean a line from imported text (bullets, weird dashes, spacing)
+      function cleanLine(line) {
+        return line
+          .replace(/[\u2022\u2023\u25E6\u2043\u2219\*]/g, "") // bullets & stars
+          .replace(/[–—]/g, "-") // en/em dash → hyphen
+          .replace(/\s+/g, " ") // collapse extra spaces
+          .trim();
+      }
+
       function normalizeKey(text) {
         const t = text.toLowerCase();
         if (t.includes("hypertension")) return "hypertension";
@@ -812,7 +821,7 @@
       }
 
       function showGeneric(text) {
-        eduTermLabel.textContent = `You clicked: “${text}”`;
+        eduTermLabel.textContent = `You clicked: “${text}"`;
         eduTitle.textContent = "Let’s make this easier to talk about";
         eduBody.textContent =
           "This might be a diagnosis, medication, test, or procedure that matters to you. In the full Health CV product, an AI assistant would pull a clear, plain-language explanation here. For now, you can use this as a reminder to ask: What is it? Why do I have it? How is it monitored or treated? What should I watch for?";
@@ -887,7 +896,7 @@
       // Specialty configuration: which sections get dimmed for each view
       const specialtyConfig = {
         primary: {
-          dim: [], // show everything equally
+          dim: [],
         },
         cardiology: {
           dim: ["social", "files"],
@@ -913,7 +922,6 @@
 
         allSections.forEach((section) => {
           const key = section.getAttribute("data-section");
-          // Never dim the "what's important to me" or the specialty controls themselves
           if (!key || key === "important" || key === "specialty") {
             section.classList.remove("dimmed");
             return;
@@ -933,11 +941,36 @@
         });
       });
 
-      // Auto-populate from attached text-based record (demo)
-      function autoPopulateFromText(text) {
+      // Improved auto-populate from attached text-based record (demo)
+      function autoPopulateFromText(rawText) {
+        const text = String(rawText || "").replace(/\r\n/g, "\n");
         const lower = text.toLowerCase();
 
-        // Problems detection
+        // Name: "Patient: Sam Smith"
+        if (!nameInput.value.trim()) {
+          const nameMatch = text.match(/patient\s*:\s*([^\n\r]+)/i);
+          if (nameMatch) {
+            nameInput.value = nameMatch[1].trim();
+          }
+        }
+
+        // DOB: "DOB: 01/15/1980" or "Date of birth: 01-15-1980"
+        if (!dobInput.value.trim()) {
+          const dobMatch = text.match(
+            /\b(dob|date of birth)\s*[:\-]?\s*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i
+          );
+          if (dobMatch) {
+            dobInput.value = dobMatch[2].trim();
+          }
+        }
+
+        // Cleaned lines
+        const allLines = text
+          .split("\n")
+          .map(cleanLine)
+          .filter(Boolean);
+
+        // Problems
         const detectedProblems = [];
         function addProblem(p) {
           if (!detectedProblems.includes(p)) detectedProblems.push(p);
@@ -946,7 +979,11 @@
         if (lower.includes("hypertension") || lower.includes("high blood pressure")) {
           addProblem("Hypertension (high blood pressure)");
         }
-        if (lower.includes("type 2") || lower.includes("type ii diabetes") || lower.includes("t2dm")) {
+        if (
+          lower.includes("type 2") ||
+          lower.includes("type ii diabetes") ||
+          lower.includes("t2dm")
+        ) {
           addProblem("Type 2 diabetes");
         }
         if (lower.includes("anxiety")) {
@@ -963,7 +1000,7 @@
           problemsInput.value = detectedProblems.join("\n");
         }
 
-        // Current medications detection
+        // Current medications
         const detectedMeds = [];
         function addMed(m) {
           if (!detectedMeds.includes(m)) detectedMeds.push(m);
@@ -981,7 +1018,7 @@
           currentMedsInput.value = detectedMeds.join("\n");
         }
 
-        // Allergies detection
+        // Allergies
         const detectedAllergies = [];
         if (lower.includes("penicillin")) {
           detectedAllergies.push("Penicillin – allergy (details to confirm)");
@@ -993,9 +1030,7 @@
           allergiesInput.value = detectedAllergies.join("\n");
         }
 
-        const allLines = text.split(/\r?\n/);
-
-        // Labs: grab lines that look like common lab references
+        // Labs
         const labLines = [];
         allLines.forEach((line) => {
           const l = line.toLowerCase();
@@ -1008,14 +1043,14 @@
             l.includes("creatinine") ||
             l.includes("egfr")
           ) {
-            labLines.push(line.trim());
+            labLines.push(line);
           }
         });
         if (!labsInput.value.trim() && labLines.length) {
           labsInput.value = labLines.join("\n");
         }
 
-        // Imaging: grab lines with CT/MRI/X-ray/ultrasound/etc.
+        // Imaging
         const imgLines = [];
         allLines.forEach((line) => {
           const l = line.toLowerCase();
@@ -1030,17 +1065,28 @@
             l.includes("echocardiogram") ||
             l.includes("colonoscopy")
           ) {
-            imgLines.push(line.trim());
+            imgLines.push(line);
           }
         });
         if (!imagingInput.value.trim() && imgLines.length) {
           imagingInput.value = imgLines.join("\n");
         }
 
-        // Blood pressure readings in text
-        const bpMatches = text.match(/(\d{2,3})\s*\/\s*(\d{2,3})/g);
-        if (!bpInput.value.trim() && bpMatches && bpMatches.length) {
-          bpInput.value = bpMatches.join("\n");
+        // Blood pressure readings (filter out dates)
+        if (!bpInput.value.trim()) {
+          const bpLines = [];
+          const bpRegex = /(\d{2,3})\s*\/\s*(\d{2,3})/g;
+          let match;
+          while ((match = bpRegex.exec(text)) !== null) {
+            const s = parseInt(match[1], 10);
+            const d = parseInt(match[2], 10);
+            if (s >= 80 && s <= 250 && d >= 40 && d <= 150 && s > d) {
+              bpLines.push(`${s}/${d}`);
+            }
+          }
+          if (bpLines.length) {
+            bpInput.value = bpLines.join("\n");
+          }
         }
 
         // Heart rate
@@ -1049,13 +1095,13 @@
           hrInput.value = hrMatch[2];
         }
 
-        // Very simple social history heuristic
+        // Social history
         if (!socialInput.value.trim()) {
           const socialLine = allLines.find((line) =>
             line.toLowerCase().includes("lives with")
           );
           if (socialLine) {
-            socialInput.value = socialLine.trim();
+            socialInput.value = socialLine;
           }
         }
 
@@ -1082,7 +1128,6 @@
           alert("There was a problem reading that file in this demo.");
         };
 
-        // For PDFs/Word docs this may not work well, but it's fine for demo text
         reader.readAsText(file);
       });
 
@@ -1182,7 +1227,7 @@
           social ||
           "Use this space to describe your home life, work, daily activity, and habits like smoking or alcohol use.";
 
-        // Important to me (now at top)
+        // Important to me
         const imp = importantInput.value.trim();
         cvImportant.textContent =
           imp ||
@@ -1212,13 +1257,6 @@
       editBtn.addEventListener("click", () => {
         intakeCard.scrollIntoView({ behavior: "smooth" });
       });
-
-      /*
-        In a real AI-powered version, inside showTerm/showGeneric you would
-        call your backend, e.g. POST /api/explain with { term, context }.
-        The backend would talk to an AI model. You never put the API key
-        in this browser code.
-      */
     </script>
   </body>
 </html>
