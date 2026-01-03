@@ -336,6 +336,33 @@
         color: #9ca3af;
         margin-bottom: 4px;
       }
+
+      /* Specialty toggle & dimming */
+      .specialty-toggle {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 4px;
+      }
+
+      .specialty-button {
+        padding: 4px 10px;
+        border-radius: 999px;
+        border: 1px solid #d1d5db;
+        background: #f3f4f6;
+        font-size: 11px;
+        cursor: pointer;
+      }
+
+      .specialty-button.active {
+        background: #111827;
+        color: #f9fafb;
+        border-color: #111827;
+      }
+
+      .cv-section.dimmed {
+        opacity: 0.5;
+      }
     </style>
   </head>
 
@@ -512,16 +539,23 @@
               id="fileInput"
               class="file-input"
               multiple
-              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt"
             />
             <div class="hint">
               In a real product, this could include discharge summaries, imaging
-              reports, or lab PDFs. In this demo, file names just show in your
-              CV preview.
+              reports, or lab PDFs. In this demo, we can try to auto-fill from a
+              simple text-based report.
             </div>
+            <button
+              type="button"
+              class="button secondary"
+              id="autoPopulateBtn"
+            >
+              Auto-fill from first attached record (demo)
+            </button>
           </div>
 
-          <button class="button" id="generateBtn">
+          <button class="button" id="generateBtn" type="button">
             Create my Health CV
           </button>
         </div>
@@ -540,12 +574,12 @@
           </div>
 
           <!-- What’s important to me now near the top -->
-          <div class="cv-section">
+          <div class="cv-section" data-section="important">
             <div class="cv-section-title">What’s important to me</div>
             <div class="quote-box" id="cvImportant"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="vitals">
             <div class="cv-section-title">Baseline vitals</div>
             <div class="cv-row" id="cvVitalsBp"></div>
             <div class="cv-row" id="cvVitalsHr"></div>
@@ -553,54 +587,95 @@
             <div class="cv-row" id="cvVitalsHt"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="problems">
             <div class="cv-section-title">Active problems</div>
             <div id="cvProblems"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="surgery">
             <div class="cv-section-title">Past surgical history</div>
             <div id="cvSurgery"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="currentMeds">
             <div class="cv-section-title">Current medications</div>
             <div id="cvCurrentMeds"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="pastMeds">
             <div class="cv-section-title">
               Medications tried in the past (and why stopped)
             </div>
             <div id="cvPastMeds"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="allergies">
             <div class="cv-section-title">Allergies</div>
             <div id="cvAllergies"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="labs">
             <div class="cv-section-title">Key labs</div>
             <div id="cvLabs"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="imaging">
             <div class="cv-section-title">Imaging &amp; procedures</div>
             <div id="cvImaging"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="social">
             <div class="cv-section-title">Social history</div>
             <div class="cv-row" id="cvSocial"></div>
           </div>
 
-          <div class="cv-section">
+          <div class="cv-section" data-section="files">
             <div class="cv-section-title">Files attached (demo only)</div>
             <div class="files-list" id="cvFiles"></div>
           </div>
 
-          <button class="button secondary" id="editBtn">
+          <!-- Specialty view toggle -->
+          <div class="cv-section" data-section="specialty">
+            <div class="cv-section-title">
+              Adjust view for different clinicians
+            </div>
+            <div class="specialty-toggle">
+              <button
+                type="button"
+                class="specialty-button active"
+                data-specialty="primary"
+              >
+                Primary care / adult
+              </button>
+              <button
+                type="button"
+                class="specialty-button"
+                data-specialty="cardiology"
+              >
+                Cardiology
+              </button>
+              <button
+                type="button"
+                class="specialty-button"
+                data-specialty="psychiatry"
+              >
+                Psychiatry
+              </button>
+              <button
+                type="button"
+                class="specialty-button"
+                data-specialty="pediatrics"
+              >
+                Pediatrics
+              </button>
+            </div>
+            <div class="hint">
+              This doesn’t change your data — just which sections are emphasized
+              for the type of visit.
+            </div>
+          </div>
+
+          <button class="button secondary" id="editBtn" type="button">
             Back to edit my information
           </button>
         </div>
@@ -806,6 +881,210 @@
 
       const generateBtn = document.getElementById("generateBtn");
       const editBtn = document.getElementById("editBtn");
+      const autoPopulateBtn = document.getElementById("autoPopulateBtn");
+      const specialtyButtons = document.querySelectorAll(".specialty-button");
+
+      // Specialty configuration: which sections get dimmed for each view
+      const specialtyConfig = {
+        primary: {
+          dim: [], // show everything equally
+        },
+        cardiology: {
+          dim: ["social", "files"],
+        },
+        psychiatry: {
+          dim: ["labs", "imaging", "files"],
+        },
+        pediatrics: {
+          dim: ["pastMeds", "surgery", "files"],
+        },
+      };
+
+      function setSpecialtyView(specialty) {
+        specialtyButtons.forEach((btn) => {
+          btn.classList.toggle(
+            "active",
+            btn.dataset.specialty === specialty
+          );
+        });
+
+        const allSections = document.querySelectorAll(".cv-section");
+        const cfg = specialtyConfig[specialty] || { dim: [] };
+
+        allSections.forEach((section) => {
+          const key = section.getAttribute("data-section");
+          // Never dim the "what's important to me" or the specialty controls themselves
+          if (!key || key === "important" || key === "specialty") {
+            section.classList.remove("dimmed");
+            return;
+          }
+          if (cfg.dim && cfg.dim.includes(key)) {
+            section.classList.add("dimmed");
+          } else {
+            section.classList.remove("dimmed");
+          }
+        });
+      }
+
+      specialtyButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const spec = btn.dataset.specialty || "primary";
+          setSpecialtyView(spec);
+        });
+      });
+
+      // Auto-populate from attached text-based record (demo)
+      function autoPopulateFromText(text) {
+        const lower = text.toLowerCase();
+
+        // Problems detection
+        const detectedProblems = [];
+        function addProblem(p) {
+          if (!detectedProblems.includes(p)) detectedProblems.push(p);
+        }
+
+        if (lower.includes("hypertension") || lower.includes("high blood pressure")) {
+          addProblem("Hypertension (high blood pressure)");
+        }
+        if (lower.includes("type 2") || lower.includes("type ii diabetes") || lower.includes("t2dm")) {
+          addProblem("Type 2 diabetes");
+        }
+        if (lower.includes("anxiety")) {
+          addProblem("Anxiety");
+        }
+        if (lower.includes("depression")) {
+          addProblem("Depression");
+        }
+        if (lower.includes("hyperlipid") || lower.includes("high cholesterol")) {
+          addProblem("Hyperlipidemia / high cholesterol");
+        }
+
+        if (!problemsInput.value.trim() && detectedProblems.length) {
+          problemsInput.value = detectedProblems.join("\n");
+        }
+
+        // Current medications detection
+        const detectedMeds = [];
+        function addMed(m) {
+          if (!detectedMeds.includes(m)) detectedMeds.push(m);
+        }
+
+        if (lower.includes("metformin")) addMed("Metformin");
+        if (lower.includes("sertraline") || lower.includes("zoloft"))
+          addMed("Sertraline");
+        if (lower.includes("atorvastatin") || lower.includes("lipitor"))
+          addMed("Atorvastatin");
+        if (lower.includes("lisinopril")) addMed("Lisinopril");
+        if (lower.includes("olmesartan")) addMed("Olmesartan");
+
+        if (!currentMedsInput.value.trim() && detectedMeds.length) {
+          currentMedsInput.value = detectedMeds.join("\n");
+        }
+
+        // Allergies detection
+        const detectedAllergies = [];
+        if (lower.includes("penicillin")) {
+          detectedAllergies.push("Penicillin – allergy (details to confirm)");
+        }
+        if (lower.includes("shellfish")) {
+          detectedAllergies.push("Shellfish – allergy (details to confirm)");
+        }
+        if (!allergiesInput.value.trim() && detectedAllergies.length) {
+          allergiesInput.value = detectedAllergies.join("\n");
+        }
+
+        const allLines = text.split(/\r?\n/);
+
+        // Labs: grab lines that look like common lab references
+        const labLines = [];
+        allLines.forEach((line) => {
+          const l = line.toLowerCase();
+          if (
+            l.includes("a1c") ||
+            l.includes("hba1c") ||
+            l.includes("ldl") ||
+            l.includes("hdl") ||
+            l.includes("cholesterol") ||
+            l.includes("creatinine") ||
+            l.includes("egfr")
+          ) {
+            labLines.push(line.trim());
+          }
+        });
+        if (!labsInput.value.trim() && labLines.length) {
+          labsInput.value = labLines.join("\n");
+        }
+
+        // Imaging: grab lines with CT/MRI/X-ray/ultrasound/etc.
+        const imgLines = [];
+        allLines.forEach((line) => {
+          const l = line.toLowerCase();
+          if (
+            l.includes("ct ") ||
+            l.startsWith("ct") ||
+            l.includes("mri") ||
+            l.includes("x-ray") ||
+            l.includes("xray") ||
+            l.includes("ultrasound") ||
+            l.includes("echo") ||
+            l.includes("echocardiogram") ||
+            l.includes("colonoscopy")
+          ) {
+            imgLines.push(line.trim());
+          }
+        });
+        if (!imagingInput.value.trim() && imgLines.length) {
+          imagingInput.value = imgLines.join("\n");
+        }
+
+        // Blood pressure readings in text
+        const bpMatches = text.match(/(\d{2,3})\s*\/\s*(\d{2,3})/g);
+        if (!bpInput.value.trim() && bpMatches && bpMatches.length) {
+          bpInput.value = bpMatches.join("\n");
+        }
+
+        // Heart rate
+        const hrMatch = text.match(/(heart rate|hr)[^0-9]{0,10}(\d{2,3})/i);
+        if (!hrInput.value.trim() && hrMatch) {
+          hrInput.value = hrMatch[2];
+        }
+
+        // Very simple social history heuristic
+        if (!socialInput.value.trim()) {
+          const socialLine = allLines.find((line) =>
+            line.toLowerCase().includes("lives with")
+          );
+          if (socialLine) {
+            socialInput.value = socialLine.trim();
+          }
+        }
+
+        alert(
+          "We’ve done a best-effort demo import from the attached record. Please review and adjust the fields before generating your Health CV."
+        );
+      }
+
+      autoPopulateBtn.addEventListener("click", () => {
+        if (!fileInput.files || fileInput.files.length === 0) {
+          alert("Please attach a text-based record file first (e.g., .txt).");
+          return;
+        }
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const text = e.target.result || "";
+          autoPopulateFromText(String(text));
+        };
+
+        reader.onerror = () => {
+          alert("There was a problem reading that file in this demo.");
+        };
+
+        // For PDFs/Word docs this may not work well, but it's fine for demo text
+        reader.readAsText(file);
+      });
 
       // Generate CV
       generateBtn.addEventListener("click", () => {
@@ -923,8 +1202,9 @@
             "No files attached in this demo. In a full product, file names or icons would appear here.";
         }
 
-        // Show CV
+        // Show CV & reset specialty view to primary
         cvCard.style.display = "block";
+        setSpecialtyView("primary");
         cvCard.scrollIntoView({ behavior: "smooth" });
       });
 
