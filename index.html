@@ -4,10 +4,17 @@
     <meta charset="UTF-8" />
     <title>Health CV Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Modern professional font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
       :root {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
         color: #020617;
         background-color: #e5e7eb;
       }
@@ -311,20 +318,51 @@
             this demo.
           </div>
 
+          <!-- Name row -->
+          <div class="field">
+            <label>Full name (optional)</label>
+            <input type="text" id="nameInput" placeholder="Sam Smith" />
+          </div>
+
+          <!-- NEW: Vitals section -->
           <div class="field-row">
             <div class="field">
-              <label>Full name (optional)</label>
-              <input type="text" id="nameInput" placeholder="Sam Smith" />
-            </div>
-            <div class="field">
-              <label>Allergies</label>
+              <label>Blood pressure readings</label>
               <textarea
-                id="allergiesInput"
-                placeholder="e.g. Penicillin – rash&#10;No known drug allergies"
+                id="bpInput"
+                placeholder="One per line, e.g.&#10;122/76&#10;128/82&#10;118/74"
               ></textarea>
               <div class="hint">
-                Medications or substances that have caused reactions.
+                Multiple readings are best. We’ll calculate an average.
               </div>
+            </div>
+            <div class="field">
+              <label>Heart rate (beats per minute)</label>
+              <input
+                type="text"
+                id="hrInput"
+                placeholder="e.g. 72"
+              />
+              <div class="hint">Your usual resting heart rate.</div>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Weight</label>
+              <input
+                type="text"
+                id="weightInput"
+                placeholder="e.g. 80 kg or 175 lb"
+              />
+            </div>
+            <div class="field">
+              <label>Height</label>
+              <input
+                type="text"
+                id="heightInput"
+                placeholder="e.g. 170 cm or 5'7&quot;"
+              />
             </div>
           </div>
 
@@ -356,6 +394,18 @@
             ></textarea>
             <div class="hint">
               Helps doctors avoid repeating things that didn’t work for you.
+            </div>
+          </div>
+
+          <!-- Allergies moved further down -->
+          <div class="field">
+            <label>Allergies</label>
+            <textarea
+              id="allergiesInput"
+              placeholder="e.g. Penicillin – rash&#10;No known drug allergies"
+            ></textarea>
+            <div class="hint">
+              Medications or substances that have caused reactions.
             </div>
           </div>
 
@@ -429,6 +479,14 @@
               </div>
             </div>
             <div class="chip">Click items for explanations</div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Baseline vitals</div>
+            <div class="cv-row" id="cvVitalsBp"></div>
+            <div class="cv-row" id="cvVitalsHr"></div>
+            <div class="cv-row" id="cvVitalsWt"></div>
+            <div class="cv-row" id="cvVitalsHt"></div>
           </div>
 
           <div class="cv-section">
@@ -555,6 +613,10 @@
       const cvCard = document.getElementById("cvCard");
 
       const nameInput = document.getElementById("nameInput");
+      const bpInput = document.getElementById("bpInput");
+      const hrInput = document.getElementById("hrInput");
+      const weightInput = document.getElementById("weightInput");
+      const heightInput = document.getElementById("heightInput");
       const allergiesInput = document.getElementById("allergiesInput");
       const problemsInput = document.getElementById("problemsInput");
       const currentMedsInput = document.getElementById("currentMedsInput");
@@ -566,6 +628,10 @@
       const fileInput = document.getElementById("fileInput");
 
       const cvName = document.getElementById("cvName");
+      const cvVitalsBp = document.getElementById("cvVitalsBp");
+      const cvVitalsHr = document.getElementById("cvVitalsHr");
+      const cvVitalsWt = document.getElementById("cvVitalsWt");
+      const cvVitalsHt = document.getElementById("cvVitalsHt");
       const cvProblems = document.getElementById("cvProblems");
       const cvCurrentMeds = document.getElementById("cvCurrentMeds");
       const cvPastMeds = document.getElementById("cvPastMeds");
@@ -648,9 +714,52 @@
           .filter(Boolean);
       }
 
+      // Parse multiple BP readings and return average
+      function computeBpAverage(value) {
+        const arr = lines(value);
+        let systolicSum = 0;
+        let diastolicSum = 0;
+        let count = 0;
+        const regex = /(\d+)\s*\/\s*(\d+)/;
+        arr.forEach((line) => {
+          const match = line.match(regex);
+          if (match) {
+            systolicSum += parseInt(match[1], 10);
+            diastolicSum += parseInt(match[2], 10);
+            count += 1;
+          }
+        });
+        if (!count) return null;
+        return {
+          systolic: Math.round(systolicSum / count),
+          diastolic: Math.round(diastolicSum / count),
+          count,
+        };
+      }
+
       document.getElementById("generateBtn").addEventListener("click", () => {
         const name = nameInput.value.trim();
         cvName.textContent = name || "Health CV";
+
+        // Vitals
+        const bpAvg = computeBpAverage(bpInput.value);
+        if (bpAvg) {
+          cvVitalsBp.textContent = `Blood pressure: ${bpAvg.systolic}/${bpAvg.diastolic} (average of ${bpAvg.count} readings)`;
+        } else if (bpInput.value.trim()) {
+          cvVitalsBp.textContent =
+            "Blood pressure: readings entered, but could not calculate an average.";
+        } else {
+          cvVitalsBp.textContent = "Blood pressure: not entered.";
+        }
+
+        const hr = hrInput.value.trim();
+        cvVitalsHr.textContent = hr ? `Heart rate: ${hr} bpm` : "";
+
+        const wt = weightInput.value.trim();
+        cvVitalsWt.textContent = wt ? `Weight: ${wt}` : "";
+
+        const ht = heightInput.value.trim();
+        cvVitalsHt.textContent = ht ? `Height: ${ht}` : "";
 
         // Problems
         cvProblems.innerHTML = "";
