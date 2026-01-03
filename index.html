@@ -335,6 +335,7 @@
 
   <body>
     <div class="page">
+      <!-- HERO -->
       <div class="hero">
         <div class="hero-title">Health CV (Demo)</div>
         <div class="hero-sub">
@@ -352,7 +353,9 @@
         </div>
       </div>
 
+      <!-- MAIN CARDS -->
       <div class="cards">
+        <!-- LEFT: INTAKE -->
         <div class="card" id="intakeCard">
           <h2>Step 1 · Tell us about your health</h2>
           <div class="sub">
@@ -365,6 +368,7 @@
             <input type="text" id="nameInput" placeholder="Sam Smith" />
           </div>
 
+          <!-- Vitals -->
           <div class="field-row">
             <div class="field">
               <label>Blood pressure readings</label>
@@ -399,18 +403,18 @@
               <input
                 type="text"
                 id="heightInput"
-                placeholder="e.g. 170 cm or 5'7&quot;"
+                placeholder="e.g. 170 cm or 5'7"
               />
             </div>
           </div>
 
+          <!-- Problems & meds -->
           <div class="field">
             <label>Problem list</label>
             <textarea
               id="problemsInput"
               placeholder="One per line, e.g.&#10;Hypertension&#10;Type 2 diabetes&#10;Generalized anxiety"
             ></textarea>
-            <div class="hint">Your ongoing medical conditions.</div>
           </div>
 
           <div class="field">
@@ -422,13 +426,14 @@
           </div>
 
           <div class="field">
-            <label>Medications tried in the past (and why stopped)</label>
+            <label>Medications you tried in the past and why you stopped</label>
             <textarea
               id="pastMedsInput"
               placeholder="One per line, e.g.&#10;Lisinopril – cough&#10;Wellbutrin – nausea"
             ></textarea>
           </div>
 
+          <!-- Allergies moved further down -->
           <div class="field">
             <label>Allergies</label>
             <textarea
@@ -450,7 +455,7 @@
               <label>Imaging or procedures</label>
               <textarea
                 id="imagingInput"
-                placeholder="One per line, e.g.&#10;CT abdomen (2015) – inflamed gallbladder"
+                placeholder="One per line, e.g.&#10;CT abdomen/pelvis (2015) – inflamed gallbladder, incidental kidney cyst"
               ></textarea>
             </div>
           </div>
@@ -459,15 +464,15 @@
             <label>Social history (optional)</label>
             <textarea
               id="socialInput"
-              placeholder="Lives with partner, walks daily, drinks wine occasionally, never smoked."
+              placeholder="Lives with partner and 2 kids, works as a teacher, walks daily. Never smoked, drinks 1–2 glasses of wine/week."
             ></textarea>
           </div>
 
           <div class="field">
-            <label>What’s important to me</label>
+            <label>What’s important to me (one line)</label>
             <textarea
               id="importantInput"
-              placeholder="My goal is to stay active and avoid unnecessary medications."
+              placeholder="My goal is to stay active and avoid unnecessary hospital visits."
             ></textarea>
           </div>
 
@@ -480,6 +485,11 @@
               multiple
               accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
             />
+            <div class="hint">
+              In a real product, this could include discharge summaries, imaging
+              reports, or lab PDFs. In this demo, file names just show in your
+              CV preview.
+            </div>
           </div>
 
           <button class="button" id="generateBtn">
@@ -487,7 +497,8 @@
           </button>
         </div>
 
-        <div class="card" id="cvCard" style="display:none">
+        <!-- RIGHT: CV VIEW -->
+        <div class="card" id="cvCard" style="display: none">
           <div class="cv-header">
             <div>
               <div class="cv-name" id="cvName">Health CV</div>
@@ -518,7 +529,7 @@
 
           <div class="cv-section">
             <div class="cv-section-title">
-              Medications tried in the past
+              Medications tried in the past (and why stopped)
             </div>
             <div id="cvPastMeds"></div>
           </div>
@@ -549,17 +560,18 @@
           </div>
 
           <div class="cv-section">
-            <div class="cv-section-title">Files attached</div>
+            <div class="cv-section-title">Files attached (demo only)</div>
             <div class="files-list" id="cvFiles"></div>
           </div>
 
           <button class="button secondary" id="editBtn">
-            Back to edit
+            Back to edit my information
           </button>
         </div>
       </div>
     </div>
 
+    <!-- EDUCATION PANEL -->
     <div class="edu-panel" id="eduPanel">
       <div class="edu-header">
         <div class="edu-chip">Health CV Assistant</div>
@@ -571,48 +583,311 @@
     </div>
 
     <script>
+      // Glossary for some common terms (simulated AI)
       const glossary = {
         hypertension: {
           title: "Hypertension (High Blood Pressure)",
           body:
-            "High blood pressure means the force of blood pushing against your arteries is consistently too high. Over time this can strain the heart, brain and kidneys."
+            "High blood pressure means the force of blood pushing against your artery walls is consistently too high. Over time this can strain the heart, brain, and kidneys and raise the risk of heart attack and stroke.",
+        },
+        "type 2 diabetes": {
+          title: "Type 2 Diabetes",
+          body:
+            "Type 2 diabetes is a condition where your body has trouble using insulin well. Sugar builds up in the blood instead of going into cells for energy. Over many years, this can affect the eyes, kidneys, nerves, and heart.",
         },
         metformin: {
           title: "Metformin",
           body:
-            "Metformin lowers blood sugar by helping your body use insulin better and reducing sugar made by the liver."
-        }
+            "Metformin is a medication that helps lower blood sugar. It mainly works by helping your body use insulin better and by lowering how much sugar your liver releases into the blood.",
+        },
+        olmesartan: {
+          title: "Olmesartan",
+          body:
+            "Olmesartan is a blood pressure medication called an ARB. It helps relax blood vessels, making it easier for the heart to pump and lowering the risk of heart and kidney problems.",
+        },
+        lisinopril: {
+          title: "Lisinopril",
+          body:
+            "Lisinopril is a blood pressure medication called an ACE inhibitor. A common side effect is a dry cough, which is one reason some people are switched to a different medicine.",
+        },
+        wellbutrin: {
+          title: "Wellbutrin (Bupropion)",
+          body:
+            "Wellbutrin, also called bupropion, is often used for depression or to help people stop smoking. It can cause side effects like trouble sleeping, nausea, or feeling more anxious in some people.",
+        },
+        a1c: {
+          title: "Hemoglobin A1c",
+          body:
+            "A1c is a blood test that shows your average blood sugar level over the past 2–3 months. Many people with diabetes aim for an A1c around 7%, but the right goal depends on the person and should be set with their doctor.",
+        },
+        ct: {
+          title: "CT Scan",
+          body:
+            "A CT scan uses X-rays and a computer to make detailed pictures of the inside of the body. It helps doctors look at organs, blood vessels, and bones.",
+        },
+        mri: {
+          title: "MRI",
+          body:
+            "MRI uses strong magnets and radio waves to create detailed pictures of the inside of the body. It is especially useful for the brain, spine, joints, and other soft tissues.",
+        },
+        penicillin: {
+          title: "Penicillin Allergy",
+          body:
+            "A penicillin allergy means your body reacts to penicillin antibiotics. Reactions can range from rash to more serious symptoms. It is important to tell every doctor and pharmacist about this.",
+        },
       };
 
-      function lines(v) {
-        return v.split("\n").map(x => x.trim()).filter(Boolean);
+      // Helpers
+      function lines(value) {
+        return value
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean);
       }
 
-      function computeBpAverage(v) {
-        const arr = lines(v);
-        let s = 0, d = 0, c = 0;
-        arr.forEach(l => {
-          const m = l.match(/(\d+)\s*\/\s*(\d+)/);
-          if (m) { s += +m[1]; d += +m[2]; c++; }
-        });
-        if (!c) return null;
-        return { systolic: Math.round(s/c), diastolic: Math.round(d/c), count:c };
+      function normalizeKey(text) {
+        const t = text.toLowerCase();
+        if (t.includes("hypertension")) return "hypertension";
+        if (t.includes("type 2")) return "type 2 diabetes";
+        if (t.includes("metformin")) return "metformin";
+        if (t.includes("olmesartan")) return "olmesartan";
+        if (t.includes("lisinopril")) return "lisinopril";
+        if (t.includes("wellbutrin") || t.includes("bupropion"))
+          return "wellbutrin";
+        if (t.includes("a1c")) return "a1c";
+        if (t.includes(" ct ")) return "ct";
+        if (t.startsWith("ct ")) return "ct";
+        if (t.includes("mri")) return "mri";
+        if (t.includes("penicillin")) return "penicillin";
+        return null;
       }
+
+      function computeBpAverage(value) {
+        const arr = lines(value);
+        let systolicSum = 0;
+        let diastolicSum = 0;
+        let count = 0;
+        const regex = /(\d+)\s*\/\s*(\d+)/;
+        arr.forEach((line) => {
+          const match = line.match(regex);
+          if (match) {
+            systolicSum += parseInt(match[1], 10);
+            diastolicSum += parseInt(match[2], 10);
+            count += 1;
+          }
+        });
+        if (!count) return null;
+        return {
+          systolic: Math.round(systolicSum / count),
+          diastolic: Math.round(diastolicSum / count),
+          count,
+        };
+      }
+
+      // Education panel
+      const eduPanel = document.getElementById("eduPanel");
+      const eduTitle = document.getElementById("eduTitle");
+      const eduBody = document.getElementById("eduBody");
+      const eduTermLabel = document.getElementById("eduTermLabel");
+      const eduClose = document.getElementById("eduClose");
+
+      function showTerm(key, originalText) {
+        const info = glossary[key];
+        if (!info) return showGeneric(originalText);
+        eduTermLabel.textContent = `You clicked: “${originalText.trim()}”`;
+        eduTitle.textContent = info.title;
+        eduBody.textContent = info.body;
+        eduPanel.style.display = "block";
+      }
+
+      function showGeneric(text) {
+        eduTermLabel.textContent = `You clicked: “${text}”`;
+        eduTitle.textContent = "Let’s make this easier to talk about";
+        eduBody.textContent =
+          "This might be a diagnosis, medication, test, or procedure that matters to you. In the full Health CV product, an AI assistant would pull a clear, plain-language explanation here. For now, you can use this as a reminder to ask: What is it? Why do I have it? How is it monitored or treated? What should I watch for?";
+        eduPanel.style.display = "block";
+      }
+
+      eduClose.addEventListener("click", () => {
+        eduPanel.style.display = "none";
+      });
 
       function makePill(text) {
         const pill = document.createElement("button");
+        pill.type = "button";
         pill.className = "pill";
-        pill.textContent = text;
+        const span = document.createElement("span");
+        span.className = "term";
+        span.textContent = text.trim();
+        pill.appendChild(span);
 
-        pill.onclick = () => {
-          const key = text.toLowerCase();
-          if (glossary[key]) showTerm(key, text);
-          else showGeneric(text);
-        };
+        const key = normalizeKey(text);
+        pill.addEventListener("click", () => {
+          if (key && glossary[key]) showTerm(key, text);
+          else showGeneric(text.trim() || "This item");
+        });
+
         return pill;
       }
 
-      const bpInput = bpInput;
+      // DOM elements
+      const intakeCard = document.getElementById("intakeCard");
+      const cvCard = document.getElementById("cvCard");
+
+      const nameInput = document.getElementById("nameInput");
+      const bpInput = document.getElementById("bpInput");
+      const hrInput = document.getElementById("hrInput");
+      const weightInput = document.getElementById("weightInput");
+      const heightInput = document.getElementById("heightInput");
+      const problemsInput = document.getElementById("problemsInput");
+      const currentMedsInput = document.getElementById("currentMedsInput");
+      const pastMedsInput = document.getElementById("pastMedsInput");
+      const allergiesInput = document.getElementById("allergiesInput");
+      const labsInput = document.getElementById("labsInput");
+      const imagingInput = document.getElementById("imagingInput");
+      const socialInput = document.getElementById("socialInput");
+      const importantInput = document.getElementById("importantInput");
+      const fileInput = document.getElementById("fileInput");
+
+      const cvName = document.getElementById("cvName");
+      const cvVitalsBp = document.getElementById("cvVitalsBp");
+      const cvVitalsHr = document.getElementById("cvVitalsHr");
+      const cvVitalsWt = document.getElementById("cvVitalsWt");
+      const cvVitalsHt = document.getElementById("cvVitalsHt");
+      const cvProblems = document.getElementById("cvProblems");
+      const cvCurrentMeds = document.getElementById("cvCurrentMeds");
+      const cvPastMeds = document.getElementById("cvPastMeds");
+      const cvAllergies = document.getElementById("cvAllergies");
+      const cvLabs = document.getElementById("cvLabs");
+      const cvImaging = document.getElementById("cvImaging");
+      const cvSocial = document.getElementById("cvSocial");
+      const cvImportant = document.getElementById("cvImportant");
+      const cvFiles = document.getElementById("cvFiles");
+
+      const generateBtn = document.getElementById("generateBtn");
+      const editBtn = document.getElementById("editBtn");
+
+      // Generate CV
+      generateBtn.addEventListener("click", () => {
+        const name = nameInput.value.trim();
+        cvName.textContent = name || "Health CV";
+
+        // Vitals
+        const bpAvg = computeBpAverage(bpInput.value);
+        if (bpAvg) {
+          cvVitalsBp.textContent = `Blood pressure: ${bpAvg.systolic}/${bpAvg.diastolic} (average of ${bpAvg.count} readings)`;
+        } else if (bpInput.value.trim()) {
+          cvVitalsBp.textContent =
+            "Blood pressure: readings entered, but could not calculate an average.";
+        } else {
+          cvVitalsBp.textContent = "Blood pressure: not entered.";
+        }
+
+        const hr = hrInput.value.trim();
+        cvVitalsHr.textContent = hr ? `Heart rate: ${hr} bpm` : "";
+
+        const wt = weightInput.value.trim();
+        cvVitalsWt.textContent = wt ? `Weight: ${wt}` : "";
+
+        const ht = heightInput.value.trim();
+        cvVitalsHt.textContent = ht ? `Height: ${ht}` : "";
+
+        // Problems
+        cvProblems.innerHTML = "";
+        const probs = lines(problemsInput.value);
+        if (!probs.length) {
+          cvProblems.textContent = "No problems entered yet.";
+        } else {
+          probs.forEach((p) => cvProblems.appendChild(makePill(p)));
+        }
+
+        // Current meds
+        cvCurrentMeds.innerHTML = "";
+        const curr = lines(currentMedsInput.value);
+        if (!curr.length) {
+          cvCurrentMeds.textContent = "No current medications entered.";
+        } else {
+          curr.forEach((m) => cvCurrentMeds.appendChild(makePill(m)));
+        }
+
+        // Past meds
+        cvPastMeds.innerHTML = "";
+        const past = lines(pastMedsInput.value);
+        if (!past.length) {
+          cvPastMeds.textContent = "No prior medications listed.";
+        } else {
+          past.forEach((m) => cvPastMeds.appendChild(makePill(m)));
+        }
+
+        // Allergies
+        cvAllergies.innerHTML = "";
+        const alls = lines(allergiesInput.value);
+        if (!alls.length) {
+          cvAllergies.textContent = "No allergies recorded.";
+        } else {
+          alls.forEach((a) => cvAllergies.appendChild(makePill(a)));
+        }
+
+        // Labs
+        cvLabs.innerHTML = "";
+        const labs = lines(labsInput.value);
+        if (!labs.length) {
+          cvLabs.textContent = "No lab results entered.";
+        } else {
+          labs.forEach((l) => cvLabs.appendChild(makePill(l)));
+        }
+
+        // Imaging
+        cvImaging.innerHTML = "";
+        const imgs = lines(imagingInput.value);
+        if (!imgs.length) {
+          cvImaging.textContent = "No imaging or procedures entered.";
+        } else {
+          imgs.forEach((i) => cvImaging.appendChild(makePill(i)));
+        }
+
+        // Social
+        const social = socialInput.value.trim();
+        cvSocial.textContent =
+          social ||
+          "Use this space to describe your home life, work, daily activity, and habits like smoking or alcohol use.";
+
+        // Important to me
+        const imp = importantInput.value.trim();
+        cvImportant.textContent =
+          imp ||
+          "Use this space to tell your doctor what matters most to you, in your own words.";
+
+        // Files
+        cvFiles.innerHTML = "";
+        if (fileInput.files && fileInput.files.length > 0) {
+          Array.from(fileInput.files).forEach((f) => {
+            const span = document.createElement("span");
+            span.className = "file-pill";
+            span.textContent = f.name;
+            cvFiles.appendChild(span);
+          });
+        } else {
+          cvFiles.textContent =
+            "No files attached in this demo. In a full product, file names or icons would appear here.";
+        }
+
+        // Show CV
+        cvCard.style.display = "block";
+        cvCard.scrollIntoView({ behavior: "smooth" });
+      });
+
+      // Back to edit
+      editBtn.addEventListener("click", () => {
+        intakeCard.scrollIntoView({ behavior: "smooth" });
+      });
+
+      /*
+        In a real AI-powered version, inside showTerm/showGeneric you would
+        call your backend, e.g. POST /api/explain with { term, context }.
+        The backend would talk to an AI model. You never put the API key
+        in this browser code.
+      */
     </script>
   </body>
 </html>
