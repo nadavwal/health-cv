@@ -193,7 +193,7 @@
         background: #e5e7eb;
         color: #111827;
         box-shadow: none;
-        margin-top: 16px;
+        margin-top: 12px;
       }
 
       .cv-header {
@@ -553,6 +553,7 @@
               id="fileInput"
               class="file-input"
               multiple
+              accept=".txt,.pdf,.doc,.docx,.rtf,.jpg,.jpeg,.png"
             />
             <div class="hint">
               In a real product, this could include discharge summaries, imaging
@@ -560,6 +561,10 @@
               CV preview.
             </div>
           </div>
+
+          <button class="button secondary" type="button" id="autoFillBtn">
+            Auto-fill from first attached record (demo)
+          </button>
 
           <button class="button" id="generateBtn">
             Create my Health CV
@@ -760,6 +765,28 @@
         };
       }
 
+      function cleanBlock(text) {
+        if (!text) return "";
+        return text
+          .split("\n")
+          .map((l) => l.replace(/^[\s*•\-]+/, "").trim())
+          .filter(Boolean)
+          .join("\n");
+      }
+
+      function extractBlock(source, label, nextLabels) {
+        const escapedLabel = label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const next = nextLabels
+          .map((l) => l.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+          .join("|");
+        const re = new RegExp(
+          escapedLabel + "\\s*:?\\s*([\\s\\S]*?)(?=\\n(?:(" + next + ")\\s*:?)|$)",
+          "i"
+        );
+        const match = source.match(re);
+        return match ? match[1].trim() : "";
+      }
+
       // Education panel
       const eduPanel = document.getElementById("eduPanel");
       const eduTitle = document.getElementById("eduTitle");
@@ -846,6 +873,144 @@
 
       const generateBtn = document.getElementById("generateBtn");
       const editBtn = document.getElementById("editBtn");
+      const autoFillBtn = document.getElementById("autoFillBtn");
+
+      // Auto-fill from first attached record (demo)
+      autoFillBtn.addEventListener("click", () => {
+        if (!fileInput.files || fileInput.files.length === 0) {
+          alert("Attach a text-based record first, then try auto-fill.");
+          return;
+        }
+
+        const file = fileInput.files[0];
+
+        // For the demo we only try to parse plain text files
+        if (
+          file.type !== "text/plain" &&
+          !file.name.toLowerCase().endsWith(".txt")
+        ) {
+          alert(
+            "For this demo, auto-fill works best with a simple .txt after-visit summary."
+          );
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const text = String(e.target.result || "");
+
+          // Simple patterns for demo parsing
+          const nameMatch = text.match(/(?:Name|Patient)\s*:\s*(.+)/i);
+          if (nameMatch) nameInput.value = nameMatch[1].trim();
+
+          const dobMatch = text.match(
+            /(?:DOB|Date of Birth)\s*:\s*([^\n]+)/i
+          );
+          if (dobMatch) dobInput.value = dobMatch[1].trim();
+
+          const importantBlock = extractBlock(text, "What's important to me", [
+            "Blood pressure",
+            "Vitals",
+            "Problems",
+            "Problem list",
+          ]);
+          if (importantBlock)
+            importantInput.value = importantBlock.replace(/\s+/g, " ").trim();
+
+          // Blood pressure lines
+          const bpLines = text
+            .split("\n")
+            .filter((l) => /\b\d{2,3}\s*\/\s*\d{2,3}\b/.test(l));
+          if (bpLines.length) bpInput.value = cleanBlock(bpLines.join("\n"));
+
+          const hrMatch = text.match(
+            /Heart rate.*?(\d+)\s*(?:bpm|beats)/i
+          );
+          if (hrMatch) hrInput.value = hrMatch[1].trim();
+
+          const wtMatch = text.match(/Weight\s*:\s*([^\n]+)/i);
+          if (wtMatch) weightInput.value = wtMatch[1].trim();
+
+          const htMatch = text.match(/Height\s*:\s*([^\n]+)/i);
+          if (htMatch) heightInput.value = htMatch[1].trim();
+
+          const problemsBlock = extractBlock(text, "Problems", [
+            "Diagnoses",
+            "Problem list",
+            "Medications",
+            "Current medications",
+          ]);
+          const diagnosesBlock = extractBlock(text, "Diagnoses", [
+            "Medications",
+            "Current medications",
+          ]);
+          const problemText = cleanBlock(
+            problemsBlock || diagnosesBlock
+          );
+          if (problemText) problemsInput.value = problemText;
+
+          const currentMedsBlock = extractBlock(
+            text,
+            "Current medications",
+            ["Past medications", "Allergies", "Labs"]
+          );
+          if (currentMedsBlock)
+            currentMedsInput.value = cleanBlock(currentMedsBlock);
+
+          const pastMedsBlock = extractBlock(text, "Past medications", [
+            "Allergies",
+            "Labs",
+            "Imaging",
+          ]);
+          if (pastMedsBlock)
+            pastMedsInput.value = cleanBlock(pastMedsBlock);
+
+          const allergiesBlock = extractBlock(text, "Allergies", [
+            "Labs",
+            "Imaging",
+            "Social history",
+          ]);
+          if (allergiesBlock)
+            allergiesInput.value = cleanBlock(allergiesBlock);
+
+          const labsBlock = extractBlock(text, "Labs", [
+            "Imaging",
+            "Imaging/Procedures",
+            "Social history",
+          ]);
+          if (labsBlock) labsInput.value = cleanBlock(labsBlock);
+
+          const imagingBlock = extractBlock(
+            text,
+            "Imaging/Procedures",
+            ["Imaging", "Social history"]
+          );
+          const imagingBlock2 = extractBlock(text, "Imaging", [
+            "Social history",
+          ]);
+          const imagingText = cleanBlock(
+            imagingBlock || imagingBlock2
+          );
+          if (imagingText) imagingInput.value = imagingText;
+
+          const socialBlock = extractBlock(text, "Social history", [
+            "Plan",
+            "Follow-up",
+          ]);
+          if (socialBlock)
+            socialInput.value = socialBlock.replace(/\s+/g, " ").trim();
+
+          alert(
+            "Demo auto-fill complete. Please review and adjust any details."
+          );
+        };
+
+        reader.onerror = () => {
+          alert("Could not read that file for auto-fill.");
+        };
+
+        reader.readAsText(file);
+      });
 
       // Generate CV
       generateBtn.addEventListener("click", () => {
@@ -972,13 +1137,6 @@
       editBtn.addEventListener("click", () => {
         intakeCard.scrollIntoView({ behavior: "smooth" });
       });
-
-      /*
-        In a real AI-powered version, inside showTerm/showGeneric you would
-        call your backend, e.g. POST /api/explain with { term, context }.
-        The backend would talk to an AI model. You never put the API key
-        in this browser code.
-      */
     </script>
   </body>
 </html>
