@@ -186,9 +186,15 @@
       .cv-header {
         display: flex;
         justify-content: space-between;
-        align-items: baseline;
+        align-items: flex-start;
         gap: 12px;
         flex-wrap: wrap;
+      }
+
+      .cv-header-main {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
 
       .cv-name {
@@ -363,9 +369,32 @@
             this demo.
           </div>
 
+          <div class="field-row">
+            <div class="field">
+              <label>Full name (optional)</label>
+              <input type="text" id="nameInput" placeholder="Sam Smith" />
+            </div>
+            <div class="field">
+              <label>Date of birth</label>
+              <input
+                type="text"
+                id="dobInput"
+                placeholder="e.g. 01/15/1980"
+              />
+              <div class="hint">Use any standard date format.</div>
+            </div>
+          </div>
+
+          <!-- What’s important to me (still here in intake, but will appear at top of CV) -->
           <div class="field">
-            <label>Full name (optional)</label>
-            <input type="text" id="nameInput" placeholder="Sam Smith" />
+            <label>What’s important to me</label>
+            <textarea
+              id="importantInput"
+              placeholder="I want to stay active for my family, understand my options clearly, and avoid unnecessary hospitalizations."
+            ></textarea>
+            <div class="hint">
+              The one line you want every doctor to read first.
+            </div>
           </div>
 
           <!-- Vitals -->
@@ -403,17 +432,26 @@
               <input
                 type="text"
                 id="heightInput"
-                placeholder="e.g. 170 cm or 5'7"
+                placeholder="e.g. 170 cm or 5'7&quot;"
               />
             </div>
           </div>
 
-          <!-- Problems & meds -->
+          <!-- Problems & Past Surgical Hx -->
           <div class="field">
             <label>Problem list</label>
             <textarea
               id="problemsInput"
-              placeholder="One per line, e.g.&#10;Hypertension&#10;Type 2 diabetes&#10;Generalized anxiety"
+              placeholder="One per line, e.g.&#10;Hypertension&#10;Type 2 diabetes&#10;Generalized anxiety&#10;Hyperlipidemia"
+            ></textarea>
+            <div class="hint">Your ongoing medical conditions.</div>
+          </div>
+
+          <div class="field">
+            <label>Past surgical history</label>
+            <textarea
+              id="surgeryInput"
+              placeholder="One per line, e.g.&#10;Appendectomy (2010)&#10;Cesarean section (2018)&#10;Arthroscopic knee surgery (2021)"
             ></textarea>
           </div>
 
@@ -421,7 +459,7 @@
             <label>Current medications (with dose &amp; frequency)</label>
             <textarea
               id="currentMedsInput"
-              placeholder="One per line, e.g.&#10;Metformin 500 mg twice daily&#10;Olmesartan 20 mg daily"
+              placeholder="One per line, e.g.&#10;Metformin 500 mg twice daily&#10;Atorvastatin 20 mg at night&#10;Sertraline 50 mg each morning"
             ></textarea>
           </div>
 
@@ -429,16 +467,15 @@
             <label>Medications you tried in the past and why you stopped</label>
             <textarea
               id="pastMedsInput"
-              placeholder="One per line, e.g.&#10;Lisinopril – cough&#10;Wellbutrin – nausea"
+              placeholder="One per line, e.g.&#10;Lisinopril – cough&#10;Sertraline – weight gain&#10;Naproxen – stomach upset"
             ></textarea>
           </div>
 
-          <!-- Allergies moved further down -->
           <div class="field">
             <label>Allergies</label>
             <textarea
               id="allergiesInput"
-              placeholder="e.g. Penicillin – rash&#10;No known drug allergies"
+              placeholder="e.g. Penicillin – rash&#10;Shellfish – hives&#10;No known drug allergies"
             ></textarea>
           </div>
 
@@ -447,7 +484,7 @@
               <label>Important lab results</label>
               <textarea
                 id="labsInput"
-                placeholder="One per line, e.g.&#10;A1c 6.7% (2025)&#10;LDL 115, HDL 32, Total 215"
+                placeholder="One per line, e.g.&#10;A1c 6.7% (2025)&#10;LDL 115, HDL 50, Total 200&#10;Creatinine 0.9, eGFR &gt; 90"
               ></textarea>
             </div>
 
@@ -455,7 +492,7 @@
               <label>Imaging or procedures</label>
               <textarea
                 id="imagingInput"
-                placeholder="One per line, e.g.&#10;CT abdomen/pelvis (2015) – inflamed gallbladder, incidental kidney cyst"
+                placeholder="One per line, e.g.&#10;CT chest (2022) – no pulmonary embolism&#10;MRI knee (2021) – medial meniscus tear&#10;Screening colonoscopy (2024) – normal"
               ></textarea>
             </div>
           </div>
@@ -464,15 +501,7 @@
             <label>Social history (optional)</label>
             <textarea
               id="socialInput"
-              placeholder="Lives with partner and 2 kids, works as a teacher, walks daily. Never smoked, drinks 1–2 glasses of wine/week."
-            ></textarea>
-          </div>
-
-          <div class="field">
-            <label>What’s important to me (one line)</label>
-            <textarea
-              id="importantInput"
-              placeholder="My goal is to stay active and avoid unnecessary hospital visits."
+              placeholder="Lives with partner and 2 kids, works in an office, walks for exercise 3x/week. Never smoked, drinks 1–2 glasses of wine/week."
             ></textarea>
           </div>
 
@@ -500,13 +529,20 @@
         <!-- RIGHT: CV VIEW -->
         <div class="card" id="cvCard" style="display: none">
           <div class="cv-header">
-            <div>
+            <div class="cv-header-main">
               <div class="cv-name" id="cvName">Health CV</div>
+              <div class="cv-meta" id="cvDob"></div>
               <div class="cv-meta">
                 Preview of what a clinician would see, based on your inputs.
               </div>
             </div>
             <div class="chip">Click items for explanations</div>
+          </div>
+
+          <!-- What’s important to me now near the top -->
+          <div class="cv-section">
+            <div class="cv-section-title">What’s important to me</div>
+            <div class="quote-box" id="cvImportant"></div>
           </div>
 
           <div class="cv-section">
@@ -520,6 +556,11 @@
           <div class="cv-section">
             <div class="cv-section-title">Active problems</div>
             <div id="cvProblems"></div>
+          </div>
+
+          <div class="cv-section">
+            <div class="cv-section-title">Past surgical history</div>
+            <div id="cvSurgery"></div>
           </div>
 
           <div class="cv-section">
@@ -552,11 +593,6 @@
           <div class="cv-section">
             <div class="cv-section-title">Social history</div>
             <div class="cv-row" id="cvSocial"></div>
-          </div>
-
-          <div class="cv-section">
-            <div class="cv-section-title">What’s important to me</div>
-            <div class="quote-box" id="cvImportant"></div>
           </div>
 
           <div class="cv-section">
@@ -735,11 +771,13 @@
       const cvCard = document.getElementById("cvCard");
 
       const nameInput = document.getElementById("nameInput");
+      const dobInput = document.getElementById("dobInput");
       const bpInput = document.getElementById("bpInput");
       const hrInput = document.getElementById("hrInput");
       const weightInput = document.getElementById("weightInput");
       const heightInput = document.getElementById("heightInput");
       const problemsInput = document.getElementById("problemsInput");
+      const surgeryInput = document.getElementById("surgeryInput");
       const currentMedsInput = document.getElementById("currentMedsInput");
       const pastMedsInput = document.getElementById("pastMedsInput");
       const allergiesInput = document.getElementById("allergiesInput");
@@ -750,11 +788,13 @@
       const fileInput = document.getElementById("fileInput");
 
       const cvName = document.getElementById("cvName");
+      const cvDob = document.getElementById("cvDob");
       const cvVitalsBp = document.getElementById("cvVitalsBp");
       const cvVitalsHr = document.getElementById("cvVitalsHr");
       const cvVitalsWt = document.getElementById("cvVitalsWt");
       const cvVitalsHt = document.getElementById("cvVitalsHt");
       const cvProblems = document.getElementById("cvProblems");
+      const cvSurgery = document.getElementById("cvSurgery");
       const cvCurrentMeds = document.getElementById("cvCurrentMeds");
       const cvPastMeds = document.getElementById("cvPastMeds");
       const cvAllergies = document.getElementById("cvAllergies");
@@ -770,7 +810,9 @@
       // Generate CV
       generateBtn.addEventListener("click", () => {
         const name = nameInput.value.trim();
+        const dob = dobInput.value.trim();
         cvName.textContent = name || "Health CV";
+        cvDob.textContent = dob ? `Date of birth: ${dob}` : "";
 
         // Vitals
         const bpAvg = computeBpAverage(bpInput.value);
@@ -799,6 +841,15 @@
           cvProblems.textContent = "No problems entered yet.";
         } else {
           probs.forEach((p) => cvProblems.appendChild(makePill(p)));
+        }
+
+        // Past surgical history
+        cvSurgery.innerHTML = "";
+        const surg = lines(surgeryInput.value);
+        if (!surg.length) {
+          cvSurgery.textContent = "No prior surgeries listed.";
+        } else {
+          surg.forEach((s) => cvSurgery.appendChild(makePill(s)));
         }
 
         // Current meds
@@ -852,7 +903,7 @@
           social ||
           "Use this space to describe your home life, work, daily activity, and habits like smoking or alcohol use.";
 
-        // Important to me
+        // Important to me (now at top)
         const imp = importantInput.value.trim();
         cvImportant.textContent =
           imp ||
