@@ -39,8 +39,27 @@
       .hero {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
         margin-bottom: 4px;
+      }
+
+      /* NEW: logo styles */
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .logo-text {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        letter-spacing: -0.01em;
       }
 
       .hero-title {
@@ -336,33 +355,6 @@
         color: #9ca3af;
         margin-bottom: 4px;
       }
-
-      /* Specialty toggle & dimming */
-      .specialty-toggle {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-top: 4px;
-      }
-
-      .specialty-button {
-        padding: 4px 10px;
-        border-radius: 999px;
-        border: 1px solid #d1d5db;
-        background: #f3f4f6;
-        font-size: 11px;
-        cursor: pointer;
-      }
-
-      .specialty-button.active {
-        background: #111827;
-        color: #f9fafb;
-        border-color: #111827;
-      }
-
-      .cv-section.dimmed {
-        opacity: 0.5;
-      }
     </style>
   </head>
 
@@ -370,6 +362,35 @@
     <div class="page">
       <!-- HERO -->
       <div class="hero">
+        <!-- NEW: Logo -->
+        <div class="logo">
+          <svg
+            class="logo-icon"
+            viewBox="0 0 32 32"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <rect
+              x="3"
+              y="3"
+              width="26"
+              height="26"
+              rx="8"
+              fill="#0f172a"
+              opacity="0.08"
+            />
+            <path
+              d="M16 22.5c-.4 0-.8-.12-1.13-.35-2.46-1.75-4.08-3.21-5.02-4.47C9 16.94 8.5 15.86 8.5 14.7 8.5 12.6 10.1 11 12.2 11c1.2 0 2.3.63 2.93 1.63.63-1 1.73-1.63 2.93-1.63 2.1 0 3.7 1.6 3.7 3.7 0 1.16-.5 2.24-1.35 2.98-.94 1.26-2.56 2.72-5.02 4.47-.33.23-.73.35-1.09.35z"
+              fill="#0f172a"
+            />
+            <path
+              d="M12.2 12.2c-1.37 0-2.45 1.08-2.45 2.5 0 .7.28 1.36.78 1.86.8 1.07 2.17 2.33 4.19 3.79 2.02-1.46 3.39-2.72 4.19-3.79.5-.5.78-1.16.78-1.86 0-1.42-1.08-2.5-2.45-2.5-1.02 0-1.9.62-2.25 1.55a.9.9 0 0 1-1.68 0c-.35-.93-1.23-1.55-2.25-1.55z"
+              fill="#38bdf8"
+            />
+          </svg>
+          <span class="logo-text">Health CV</span>
+        </div>
+
         <div class="hero-title">Health CV (Demo)</div>
         <div class="hero-sub">
           A simple way for patients to capture their story once and share it
@@ -412,7 +433,7 @@
             </div>
           </div>
 
-          <!-- What’s important to me -->
+          <!-- What’s important to me (still here in intake, but will appear at top of CV) -->
           <div class="field">
             <label>What’s important to me</label>
             <textarea
@@ -539,23 +560,16 @@
               id="fileInput"
               class="file-input"
               multiple
-              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt"
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
             />
             <div class="hint">
               In a real product, this could include discharge summaries, imaging
-              reports, or lab PDFs. In this demo, we can try to auto-fill from a
-              simple text-based report.
+              reports, or lab PDFs. In this demo, file names just show in your
+              CV preview.
             </div>
-            <button
-              type="button"
-              class="button secondary"
-              id="autoPopulateBtn"
-            >
-              Auto-fill from first attached record (demo)
-            </button>
           </div>
 
-          <button class="button" id="generateBtn" type="button">
+          <button class="button" id="generateBtn">
             Create my Health CV
           </button>
         </div>
@@ -573,13 +587,13 @@
             <div class="chip">Click items for explanations</div>
           </div>
 
-          <!-- What’s important to me -->
-          <div class="cv-section" data-section="important">
+          <!-- What’s important to me now near the top -->
+          <div class="cv-section">
             <div class="cv-section-title">What’s important to me</div>
             <div class="quote-box" id="cvImportant"></div>
           </div>
 
-          <div class="cv-section" data-section="vitals">
+          <div class="cv-section">
             <div class="cv-section-title">Baseline vitals</div>
             <div class="cv-row" id="cvVitalsBp"></div>
             <div class="cv-row" id="cvVitalsHr"></div>
@@ -587,95 +601,54 @@
             <div class="cv-row" id="cvVitalsHt"></div>
           </div>
 
-          <div class="cv-section" data-section="problems">
+          <div class="cv-section">
             <div class="cv-section-title">Active problems</div>
             <div id="cvProblems"></div>
           </div>
 
-          <div class="cv-section" data-section="surgery">
+          <div class="cv-section">
             <div class="cv-section-title">Past surgical history</div>
             <div id="cvSurgery"></div>
           </div>
 
-          <div class="cv-section" data-section="currentMeds">
+          <div class="cv-section">
             <div class="cv-section-title">Current medications</div>
             <div id="cvCurrentMeds"></div>
           </div>
 
-          <div class="cv-section" data-section="pastMeds">
+          <div class="cv-section">
             <div class="cv-section-title">
               Medications tried in the past (and why stopped)
             </div>
             <div id="cvPastMeds"></div>
           </div>
 
-          <div class="cv-section" data-section="allergies">
+          <div class="cv-section">
             <div class="cv-section-title">Allergies</div>
             <div id="cvAllergies"></div>
           </div>
 
-          <div class="cv-section" data-section="labs">
+          <div class="cv-section">
             <div class="cv-section-title">Key labs</div>
             <div id="cvLabs"></div>
           </div>
 
-          <div class="cv-section" data-section="imaging">
+          <div class="cv-section">
             <div class="cv-section-title">Imaging &amp; procedures</div>
             <div id="cvImaging"></div>
           </div>
 
-          <div class="cv-section" data-section="social">
+          <div class="cv-section">
             <div class="cv-section-title">Social history</div>
             <div class="cv-row" id="cvSocial"></div>
           </div>
 
-          <div class="cv-section" data-section="files">
+          <div class="cv-section">
             <div class="cv-section-title">Files attached (demo only)</div>
             <div class="files-list" id="cvFiles"></div>
           </div>
 
-          <!-- Specialty view toggle -->
-          <div class="cv-section" data-section="specialty">
-            <div class="cv-section-title">
-              Adjust view for different clinicians
-            </div>
-            <div class="specialty-toggle">
-              <button
-                type="button"
-                class="specialty-button active"
-                data-specialty="primary"
-              >
-                Primary care / adult
-              </button>
-              <button
-                type="button"
-                class="specialty-button"
-                data-specialty="cardiology"
-              >
-                Cardiology
-              </button>
-              <button
-                type="button"
-                class="specialty-button"
-                data-specialty="psychiatry"
-              >
-                Psychiatry
-              </button>
-              <button
-                type="button"
-                class="specialty-button"
-                data-specialty="pediatrics"
-              >
-                Pediatrics
-              </button>
-            </div>
-            <div class="hint">
-              This doesn’t change your data — just which sections are emphasized
-              for the type of visit.
-            </div>
-          </div>
-
-          <button class="button secondary" id="editBtn" type="button">
+          <button class="button secondary" id="editBtn">
             Back to edit my information
           </button>
         </div>
@@ -756,15 +729,6 @@
           .filter(Boolean);
       }
 
-      // Clean a line from imported text (bullets, weird dashes, spacing)
-      function cleanLine(line) {
-        return line
-          .replace(/[\u2022\u2023\u25E6\u2043\u2219\*]/g, "") // bullets & stars
-          .replace(/[–—]/g, "-") // en/em dash → hyphen
-          .replace(/\s+/g, " ") // collapse extra spaces
-          .trim();
-      }
-
       function normalizeKey(text) {
         const t = text.toLowerCase();
         if (t.includes("hypertension")) return "hypertension";
@@ -821,7 +785,7 @@
       }
 
       function showGeneric(text) {
-        eduTermLabel.textContent = `You clicked: “${text}"`;
+        eduTermLabel.textContent = `You clicked: “${text}”`;
         eduTitle.textContent = "Let’s make this easier to talk about";
         eduBody.textContent =
           "This might be a diagnosis, medication, test, or procedure that matters to you. In the full Health CV product, an AI assistant would pull a clear, plain-language explanation here. For now, you can use this as a reminder to ask: What is it? Why do I have it? How is it monitored or treated? What should I watch for?";
@@ -890,246 +854,6 @@
 
       const generateBtn = document.getElementById("generateBtn");
       const editBtn = document.getElementById("editBtn");
-      const autoPopulateBtn = document.getElementById("autoPopulateBtn");
-      const specialtyButtons = document.querySelectorAll(".specialty-button");
-
-      // Specialty configuration: which sections get dimmed for each view
-      const specialtyConfig = {
-        primary: {
-          dim: [],
-        },
-        cardiology: {
-          dim: ["social", "files"],
-        },
-        psychiatry: {
-          dim: ["labs", "imaging", "files"],
-        },
-        pediatrics: {
-          dim: ["pastMeds", "surgery", "files"],
-        },
-      };
-
-      function setSpecialtyView(specialty) {
-        specialtyButtons.forEach((btn) => {
-          btn.classList.toggle(
-            "active",
-            btn.dataset.specialty === specialty
-          );
-        });
-
-        const allSections = document.querySelectorAll(".cv-section");
-        const cfg = specialtyConfig[specialty] || { dim: [] };
-
-        allSections.forEach((section) => {
-          const key = section.getAttribute("data-section");
-          if (!key || key === "important" || key === "specialty") {
-            section.classList.remove("dimmed");
-            return;
-          }
-          if (cfg.dim && cfg.dim.includes(key)) {
-            section.classList.add("dimmed");
-          } else {
-            section.classList.remove("dimmed");
-          }
-        });
-      }
-
-      specialtyButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const spec = btn.dataset.specialty || "primary";
-          setSpecialtyView(spec);
-        });
-      });
-
-      // Improved auto-populate from attached text-based record (demo)
-      function autoPopulateFromText(rawText) {
-        const text = String(rawText || "").replace(/\r\n/g, "\n");
-        const lower = text.toLowerCase();
-
-        // Name: "Patient: Sam Smith"
-        if (!nameInput.value.trim()) {
-          const nameMatch = text.match(/patient\s*:\s*([^\n\r]+)/i);
-          if (nameMatch) {
-            nameInput.value = nameMatch[1].trim();
-          }
-        }
-
-        // DOB: "DOB: 01/15/1980" or "Date of birth: 01-15-1980"
-        if (!dobInput.value.trim()) {
-          const dobMatch = text.match(
-            /\b(dob|date of birth)\s*[:\-]?\s*([0-9]{1,2}[\/\-][0-9]{1,2}[\/\-][0-9]{2,4})/i
-          );
-          if (dobMatch) {
-            dobInput.value = dobMatch[2].trim();
-          }
-        }
-
-        // Cleaned lines
-        const allLines = text
-          .split("\n")
-          .map(cleanLine)
-          .filter(Boolean);
-
-        // Problems
-        const detectedProblems = [];
-        function addProblem(p) {
-          if (!detectedProblems.includes(p)) detectedProblems.push(p);
-        }
-
-        if (lower.includes("hypertension") || lower.includes("high blood pressure")) {
-          addProblem("Hypertension (high blood pressure)");
-        }
-        if (
-          lower.includes("type 2") ||
-          lower.includes("type ii diabetes") ||
-          lower.includes("t2dm")
-        ) {
-          addProblem("Type 2 diabetes");
-        }
-        if (lower.includes("anxiety")) {
-          addProblem("Anxiety");
-        }
-        if (lower.includes("depression")) {
-          addProblem("Depression");
-        }
-        if (lower.includes("hyperlipid") || lower.includes("high cholesterol")) {
-          addProblem("Hyperlipidemia / high cholesterol");
-        }
-
-        if (!problemsInput.value.trim() && detectedProblems.length) {
-          problemsInput.value = detectedProblems.join("\n");
-        }
-
-        // Current medications
-        const detectedMeds = [];
-        function addMed(m) {
-          if (!detectedMeds.includes(m)) detectedMeds.push(m);
-        }
-
-        if (lower.includes("metformin")) addMed("Metformin");
-        if (lower.includes("sertraline") || lower.includes("zoloft"))
-          addMed("Sertraline");
-        if (lower.includes("atorvastatin") || lower.includes("lipitor"))
-          addMed("Atorvastatin");
-        if (lower.includes("lisinopril")) addMed("Lisinopril");
-        if (lower.includes("olmesartan")) addMed("Olmesartan");
-
-        if (!currentMedsInput.value.trim() && detectedMeds.length) {
-          currentMedsInput.value = detectedMeds.join("\n");
-        }
-
-        // Allergies
-        const detectedAllergies = [];
-        if (lower.includes("penicillin")) {
-          detectedAllergies.push("Penicillin – allergy (details to confirm)");
-        }
-        if (lower.includes("shellfish")) {
-          detectedAllergies.push("Shellfish – allergy (details to confirm)");
-        }
-        if (!allergiesInput.value.trim() && detectedAllergies.length) {
-          allergiesInput.value = detectedAllergies.join("\n");
-        }
-
-        // Labs
-        const labLines = [];
-        allLines.forEach((line) => {
-          const l = line.toLowerCase();
-          if (
-            l.includes("a1c") ||
-            l.includes("hba1c") ||
-            l.includes("ldl") ||
-            l.includes("hdl") ||
-            l.includes("cholesterol") ||
-            l.includes("creatinine") ||
-            l.includes("egfr")
-          ) {
-            labLines.push(line);
-          }
-        });
-        if (!labsInput.value.trim() && labLines.length) {
-          labsInput.value = labLines.join("\n");
-        }
-
-        // Imaging
-        const imgLines = [];
-        allLines.forEach((line) => {
-          const l = line.toLowerCase();
-          if (
-            l.includes("ct ") ||
-            l.startsWith("ct") ||
-            l.includes("mri") ||
-            l.includes("x-ray") ||
-            l.includes("xray") ||
-            l.includes("ultrasound") ||
-            l.includes("echo") ||
-            l.includes("echocardiogram") ||
-            l.includes("colonoscopy")
-          ) {
-            imgLines.push(line);
-          }
-        });
-        if (!imagingInput.value.trim() && imgLines.length) {
-          imagingInput.value = imgLines.join("\n");
-        }
-
-        // Blood pressure readings (filter out dates)
-        if (!bpInput.value.trim()) {
-          const bpLines = [];
-          const bpRegex = /(\d{2,3})\s*\/\s*(\d{2,3})/g;
-          let match;
-          while ((match = bpRegex.exec(text)) !== null) {
-            const s = parseInt(match[1], 10);
-            const d = parseInt(match[2], 10);
-            if (s >= 80 && s <= 250 && d >= 40 && d <= 150 && s > d) {
-              bpLines.push(`${s}/${d}`);
-            }
-          }
-          if (bpLines.length) {
-            bpInput.value = bpLines.join("\n");
-          }
-        }
-
-        // Heart rate
-        const hrMatch = text.match(/(heart rate|hr)[^0-9]{0,10}(\d{2,3})/i);
-        if (!hrInput.value.trim() && hrMatch) {
-          hrInput.value = hrMatch[2];
-        }
-
-        // Social history
-        if (!socialInput.value.trim()) {
-          const socialLine = allLines.find((line) =>
-            line.toLowerCase().includes("lives with")
-          );
-          if (socialLine) {
-            socialInput.value = socialLine;
-          }
-        }
-
-        alert(
-          "We’ve done a best-effort demo import from the attached record. Please review and adjust the fields before generating your Health CV."
-        );
-      }
-
-      autoPopulateBtn.addEventListener("click", () => {
-        if (!fileInput.files || fileInput.files.length === 0) {
-          alert("Please attach a text-based record file first (e.g., .txt).");
-          return;
-        }
-
-        const file = fileInput.files[0];
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
-          const text = e.target.result || "";
-          autoPopulateFromText(String(text));
-        };
-
-        reader.onerror = () => {
-          alert("There was a problem reading that file in this demo.");
-        };
-
-        reader.readAsText(file);
-      });
 
       // Generate CV
       generateBtn.addEventListener("click", () => {
@@ -1227,7 +951,7 @@
           social ||
           "Use this space to describe your home life, work, daily activity, and habits like smoking or alcohol use.";
 
-        // Important to me
+        // Important to me (now at top)
         const imp = importantInput.value.trim();
         cvImportant.textContent =
           imp ||
@@ -1247,9 +971,8 @@
             "No files attached in this demo. In a full product, file names or icons would appear here.";
         }
 
-        // Show CV & reset specialty view to primary
+        // Show CV
         cvCard.style.display = "block";
-        setSpecialtyView("primary");
         cvCard.scrollIntoView({ behavior: "smooth" });
       });
 
@@ -1257,6 +980,13 @@
       editBtn.addEventListener("click", () => {
         intakeCard.scrollIntoView({ behavior: "smooth" });
       });
+
+      /*
+        In a real AI-powered version, inside showTerm/showGeneric you would
+        call your backend, e.g. POST /api/explain with { term, context }.
+        The backend would talk to an AI model. You never put the API key
+        in this browser code.
+      */
     </script>
   </body>
 </html>
